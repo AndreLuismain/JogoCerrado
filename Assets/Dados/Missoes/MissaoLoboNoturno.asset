@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aaf45bfcb72cbf8439af0613d6cd61dc, type: 3}
+  m_Name: MissaoLoboNoturno
+  m_EditorClassIdentifier: Assembly-CSharp::Cerrado.Quests.QuestData
+  id: quest_lobo_noite
+  title: O Fantasma da Noite
+  description: "Aguarde o anoitecer no Cerrado e documente o raro Lobo-guar\xE1 sob o luar. Recompensa o acesso \xE0 Chapada!"
+  targetSpecies: {fileID: 11400000, guid: eb46b0750bd58504db685efc2b70d81c, type: 2}
+  minStarsRequired: 2
+  requiresNight: 1
+  rewardCoins: 160
+  unlockedAreaId: area_chapada

@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4743aa8936c7e8b47b9f8eed8d4406ce, type: 3}
+  m_Name: EstabilizadorFoco
+  m_EditorClassIdentifier: Assembly-CSharp::Cerrado.Economy.ShopItemData
+  id: stabilizer_mk1
+  itemName: "Estabilizador \xD3ptico de Imagem"
+  itemDescription: "Compensa movimentos r\xE1pidos e vento. Aumenta a toler\xE2ncia do sensor de foco em animais velozes como a Ema."
+  price: 120
+  type: 2
+  icon: {fileID: 0}
+  zoomBonusFOV: 0
+  enablesNightVision: 0
+  focusToleranceBonus: 0.15
+  extraBackpackSlots: 0

@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b8878ebc96ec1b488348b2939932018, type: 3}
+  m_Name: TamanduaBandeira
+  m_EditorClassIdentifier: Assembly-CSharp::Cerrado.Data.SpeciesData
+  id: tamandua_bandeira
+  commonName: "Tamandu\xE1-bandeira"
+  scientificName: Myrmecophaga tridactyla
+  category: 0
+  rarity: 0
+  activityTime: 0
+  educationalDescription: "Mam\xEDfero inset\xEDvoro caracter\xEDstico do Cerrado. Alimenta-se principalmente de formigas e cupins, usando suas garras fortes e l\xEDngua comprida. \xC9 essencial para o controle biol\xF3gico de insetos."
+  habitatDescription: "Campos abertos e cerrad\xE3o."
+  conservationStatus: "Vulner\xE1vel (VU)"
+  baseScore: 180
+  baseCoins: 18
+  minIdealDistance: 3.5
+  maxIdealDistance: 14
+  targetRadius: 1.4
+  icon: {fileID: 0}

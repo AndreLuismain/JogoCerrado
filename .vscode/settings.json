@@ -67,5 +67,8 @@
         "*.sln": "*.csproj",
         "*.slnx": "*.csproj"
     },
-    "dotnet.defaultSolution": "Cerrado.slnx"
+    "dotnet.defaultSolution": "Cerrado.slnx",
+    "dotrush.roslyn.projectOrSolutionFiles": [
+        "c:\\Users\\André Luís\\Cerrado\\Cerrado.slnx"
+    ]
 }

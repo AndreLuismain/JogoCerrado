@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b8878ebc96ec1b488348b2939932018, type: 3}
+  m_Name: Aroeira
+  m_EditorClassIdentifier: Assembly-CSharp::Cerrado.Data.SpeciesData
+  id: aroeira
+  commonName: "Aroeira-do-sert\xE3o"
+  scientificName: Myracrodruon urundeuva
+  category: 1
+  rarity: 0
+  activityTime: 2
+  educationalDescription: "Esp\xE9cie nobre com madeira de alt\xEDssima durabilidade e grande resist\xEAncia ao estresse h\xEDdrico da esta\xE7\xE3o seca."
+  habitatDescription: Matas secas e cerrado sensu stricto.
+  conservationStatus: "Quase Amea\xE7ada (NT)"
+  baseScore: 140
+  baseCoins: 14
+  minIdealDistance: 5
+  maxIdealDistance: 20
+  targetRadius: 2.8
+  icon: {fileID: 0}
