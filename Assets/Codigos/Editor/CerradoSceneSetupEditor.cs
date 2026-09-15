@@ -53,9 +53,10 @@ namespace Cerrado.EditorTools
                 var guideNPC = npc.GetComponent<GuideNPC>();
                 var shopNPC = npc.GetComponent<ShopNPC>();
 
-                // 6. Modelos 3D e Vegetação do Cerrado
+                // 6. Modelos 3D, Vegetação e Marcadores de Cenário
                 SetupEntities();
                 SetupVegetation();
+                SetupSceneBookmarks();
 
                 // 7. UI Canvas Completa (Visor, Diálogos do Guia, Álbum, Loja, Missões)
                 SetupUI(playerController, guideNPC, shopNPC);
@@ -65,10 +66,53 @@ namespace Cerrado.EditorTools
                 EditorUtility.DisplayDialog("Cerrado Engine", 
                     "Cena do Cerrado montada com sucesso!\n\n" +
                     "• Terreno verde-savana com vegetação e capim nativo\n" +
+                    "• Atmosfera com névoa volumétrica (WispySmoke) e poeira nos animais\n" +
+                    "• Marcadores de cenário para navegação rápida de câmera na Scene View\n" +
                     "• Biólogo Guia posicionado à sua frente ([E] para iniciar o tutorial)\n" +
                     "• Animais (Tamanduá, Ema, Lobo-guará) e árvores (Jatobá)\n" +
                     "• Interface completa: Visor com zoom, Diálogo com opções, Álbum (Tab) e Missões no HUD\n\n" +
                     "Basta apertar PLAY no topo do Unity para testar!", "OK");
+            }
+            finally
+            {
+                Undo.CollapseUndoOperations(undoGroup);
+            }
+        }
+
+        [MenuItem("Cerrado/5. Aplicar Novos Efeitos e Marcadores no Cenário Atual")]
+        public static void ApplyAtmosphereAndBookmarksToCurrentScene()
+        {
+            Undo.SetCurrentGroupName("Cerrado: Aplicar Efeitos e Marcadores");
+            int undoGroup = Undo.GetCurrentGroup();
+
+            try
+            {
+                // 1. Atmosfera e Névoa
+                GameObject ambObj = GameObject.Find("_Ambiente");
+                if (ambObj == null) ambObj = new GameObject("_Ambiente");
+                GetOrAddComponent<CerradoAtmosphere>(ambObj);
+                GetOrAddComponent<TerrainTreeToggle>(ambObj);
+
+                // 2. Poeira nos Animais
+                var animals = Object.FindObjectsByType<AnimalAI>(FindObjectsInactive.Include);
+                int count = 0;
+                foreach (var a in animals)
+                {
+                    GetOrAddComponent<AnimalDustTrail>(a.gameObject);
+                    count++;
+                }
+
+                // 3. Marcadores de Cenário (SceneAnnotation)
+                SetupSceneBookmarks();
+
+                UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(UnityEngine.SceneManagement.SceneManager.GetActiveScene());
+
+                EditorUtility.DisplayDialog("Cerrado Engine",
+                    $"Novos efeitos aplicados com sucesso no cenário atual!\n\n" +
+                    $"• Névoa volumétrica do Cerrado (WispySmoke) configurada em '_Ambiente'\n" +
+                    $"• Rastro de poeira avermelhada (AnimalDustTrail) adicionado a {count} animais\n" +
+                    $"• Marcadores de cenário (SceneAnnotation) criados em '_Marcadores_Cenário'\n" +
+                    $"• Utilitário TerrainTreeToggle adicionado para alternar folhagem em edição", "OK");
             }
             finally
             {
@@ -142,6 +186,10 @@ namespace Cerrado.EditorTools
             RenderSettings.ambientSkyColor = new Color(0.48f, 0.68f, 0.95f);
             RenderSettings.ambientEquatorColor = new Color(0.85f, 0.72f, 0.50f);
             RenderSettings.ambientGroundColor = new Color(0.38f, 0.28f, 0.18f);
+
+            GameObject ambObj = GameObject.Find("_Ambiente") ?? new GameObject("_Ambiente");
+            GetOrAddComponent<CerradoAtmosphere>(ambObj);
+            GetOrAddComponent<TerrainTreeToggle>(ambObj);
 
             return sun;
         }
@@ -412,6 +460,32 @@ namespace Cerrado.EditorTools
             }
         }
 
+        private static void SetupSceneBookmarks()
+        {
+            GameObject bookmarksGroup = GameObject.Find("_Marcadores_Cenário");
+            if (bookmarksGroup != null) return;
+
+            bookmarksGroup = new GameObject("_Marcadores_Cenário");
+
+            CreateBookmark(bookmarksGroup.transform, "Marcador_01_Acampamento", "1. Acampamento Base & Biólogo Guia", 1, new Vector3(0f, 1.5f, 1.5f), Quaternion.Euler(12f, 0f, 0f));
+            CreateBookmark(bookmarksGroup.transform, "Marcador_02_Tamandua", "2. Savana dos Tamanduás-Bandeira", 2, new Vector3(4f, 1.5f, 4.5f), Quaternion.Euler(15f, 25f, 0f));
+            CreateBookmark(bookmarksGroup.transform, "Marcador_03_Ema", "3. Trilha das Emas & Gramíneas", 3, new Vector3(-6f, 1.5f, 7.5f), Quaternion.Euler(15f, -20f, 0f));
+            CreateBookmark(bookmarksGroup.transform, "Marcador_04_LoboGuara", "4. Habitat do Lobo-Guará (Colinas)", 4, new Vector3(8f, 2f, 11f), Quaternion.Euler(15f, 15f, 0f));
+            CreateBookmark(bookmarksGroup.transform, "Marcador_05_Jatoba", "5. Bosque de Jatobás Centenários", 5, new Vector3(0f, 2.5f, 10f), Quaternion.Euler(15f, 0f, 0f));
+        }
+
+        private static void CreateBookmark(Transform parent, string name, string headline, int id, Vector3 pos, Quaternion rot)
+        {
+            GameObject bookmark = new GameObject(name);
+            bookmark.transform.SetParent(parent);
+            bookmark.transform.position = pos;
+            bookmark.transform.rotation = rot;
+
+            var annotation = bookmark.AddComponent<SceneAnnotation>();
+            annotation.headline = headline;
+            annotation.id = id;
+        }
+
         private static void SetupAnimal(
             Transform parent, string name, string modelPath, string speciesPath,
             Vector3 position, AnimalTemperament temperament, float walkSpeed, float fleeSpeed,
@@ -453,6 +527,8 @@ namespace Cerrado.EditorTools
             soAI.FindProperty("walkSpeed").floatValue = walkSpeed;
             soAI.FindProperty("fleeSpeed").floatValue = fleeSpeed;
             soAI.ApplyModifiedProperties();
+
+            GetOrAddComponent<AnimalDustTrail>(animalObj);
 
             var target = GetOrAddComponent<PhotographableTarget>(animalObj);
             var speciesData = AssetDatabase.LoadAssetAtPath<SpeciesData>(speciesPath);
