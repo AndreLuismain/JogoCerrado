@@ -9,7 +9,7 @@ namespace Cerrado.AI
     public class AnimalDustTrail : MonoBehaviour
     {
         [Tooltip("Cor da terra avermelhada do Cerrado")]
-        [SerializeField] private Color dustColor = new Color(0.72f, 0.42f, 0.24f, 0.40f);
+        [SerializeField] private Color dustColor = new Color(0.72f, 0.42f, 0.24f, 0.20f);
         
         private ParticleSystem dustSystem;
         private AnimalAI animalAI;
@@ -27,7 +27,7 @@ namespace Cerrado.AI
             var emission = dustSystem.emission;
             if (animalAI != null && animalAI.CurrentState == AnimalState.Flee)
             {
-                emission.rateOverTime = 9f;
+                emission.rateOverTime = 6f;
             }
             else
             {
@@ -40,8 +40,7 @@ namespace Cerrado.AI
             var existing = transform.Find("Poeira_Cerrado");
             if (existing != null)
             {
-                dustSystem = existing.GetComponent<ParticleSystem>();
-                return;
+                DestroyImmediate(existing.gameObject);
             }
 
             var dustObj = new GameObject("Poeira_Cerrado");
@@ -50,19 +49,19 @@ namespace Cerrado.AI
 
             dustSystem = dustObj.AddComponent<ParticleSystem>();
             var main = dustSystem.main;
-            main.startLifetime = 1.2f;
-            main.startSpeed = 0.4f;
-            main.startSize = new ParticleSystem.MinMaxCurve(0.5f, 1.3f);
+            main.startLifetime = 0.8f;
+            main.startSpeed = 0.25f;
+            main.startSize = new ParticleSystem.MinMaxCurve(0.25f, 0.55f);
             main.startColor = dustColor;
             main.simulationSpace = ParticleSystemSimulationSpace.World;
-            main.maxParticles = 30;
+            main.maxParticles = 20;
 
             var emission = dustSystem.emission;
             emission.rateOverTime = 0f;
 
             var shape = dustSystem.shape;
             shape.shapeType = ParticleSystemShapeType.Sphere;
-            shape.radius = 0.35f;
+            shape.radius = 0.25f;
 
             var tsa = dustSystem.textureSheetAnimation;
             tsa.enabled = true;
@@ -75,15 +74,15 @@ namespace Cerrado.AI
             Gradient grad = new Gradient();
             grad.SetKeys(
                 new GradientColorKey[] { new GradientColorKey(dustColor, 0f), new GradientColorKey(dustColor, 1f) },
-                new GradientAlphaKey[] { new GradientAlphaKey(0.4f, 0f), new GradientAlphaKey(dustColor.a, 0.4f), new GradientAlphaKey(0f, 1f) }
+                new GradientAlphaKey[] { new GradientAlphaKey(0.25f, 0f), new GradientAlphaKey(dustColor.a, 0.4f), new GradientAlphaKey(0f, 1f) }
             );
             col.color = grad;
 
             var sizeOverLife = dustSystem.sizeOverLifetime;
             sizeOverLife.enabled = true;
             AnimationCurve curve = new AnimationCurve();
-            curve.AddKey(0f, 0.35f);
-            curve.AddKey(1f, 1.1f);
+            curve.AddKey(0f, 0.25f);
+            curve.AddKey(1f, 0.8f);
             sizeOverLife.size = new ParticleSystem.MinMaxCurve(1f, curve);
 
             var renderer = dustObj.GetComponent<ParticleSystemRenderer>();
@@ -98,6 +97,10 @@ namespace Cerrado.AI
             mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
             mat.SetInt("_ZWrite", 0);
             mat.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
+            mat.SetOverrideTag("RenderType", "Transparent");
+            mat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+            mat.DisableKeyword("_SURFACE_TYPE_OPAQUE");
+            mat.EnableKeyword("_BLENDMODE_ALPHA");
 
 #if UNITY_EDITOR
             var tex = UnityEditor.AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/TerrainSampleAssets/Textures/VFX/WispySmoke02_8x8.tga");

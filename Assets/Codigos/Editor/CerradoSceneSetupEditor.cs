@@ -144,21 +144,25 @@ namespace Cerrado.EditorTools
                 if (mats == null || mats.Length == 0) continue;
 
                 bool modified = false;
+                string objName = r.gameObject.name.ToLower();
+                Transform p = r.transform.parent;
+                while (p != null)
+                {
+                    objName += " " + p.gameObject.name.ToLower();
+                    p = p.parent;
+                }
+
                 for (int i = 0; i < mats.Length; i++)
                 {
+                    bool isGrassOrBush = objName.Contains("grass") || objName.Contains("grama") || objName.Contains("bush") || objName.Contains("arbusto") || objName.Contains("heather") || objName.Contains("fern") || objName.Contains("plant");
+                    bool hasWrongOpaque = mats[i] != null && mats[i].name == "Mat_Elemento_Cerrado" && isGrassOrBush;
+
                     if (mats[i] == null || mats[i].shader == null || 
                         mats[i].shader.name.StartsWith("Hidden/InternalErrorShader") ||
                         mats[i].shader.name == "Hidden/DefaultErrorShader" ||
-                        !mats[i].shader.name.Contains("Universal Render Pipeline"))
+                        !mats[i].shader.name.Contains("Universal Render Pipeline") ||
+                        hasWrongOpaque)
                     {
-                        string objName = r.gameObject.name.ToLower();
-                        Transform p = r.transform.parent;
-                        while (p != null && !objName.Contains("tamandua") && !objName.Contains("ema") && !objName.Contains("lobo") && !objName.Contains("jatoba") && !objName.Contains("npc"))
-                        {
-                            objName += " " + p.gameObject.name.ToLower();
-                            p = p.parent;
-                        }
-
                         if (objName.Contains("tamandua"))
                             mats[i] = GetOrCreateMaterial("Mat_Tamandua_Bandeira", new Color(0.46f, 0.36f, 0.26f));
                         else if (objName.Contains("ema"))
@@ -167,8 +171,12 @@ namespace Cerrado.EditorTools
                             mats[i] = GetOrCreateMaterial("Mat_Lobo_Guara", new Color(0.82f, 0.44f, 0.18f));
                         else if (objName.Contains("jatoba"))
                             mats[i] = GetOrCreateMaterial("Mat_Jatoba", new Color(0.35f, 0.48f, 0.20f));
-                        else if (objName.Contains("npc"))
+                        else if (objName.Contains("npc") || objName.Contains("guia"))
                             mats[i] = GetOrCreateMaterial("Mat_NPC_Pesquisador", new Color(0.30f, 0.45f, 0.65f));
+                        else if (objName.Contains("grass") || objName.Contains("grama"))
+                            mats[i] = AssetDatabase.LoadAssetAtPath<Material>("Assets/Dados/Materiais/Mat_Capim_Cerrado.mat") ?? GetOrCreateMaterial("Mat_Capim_Cerrado", new Color(0.75f, 0.65f, 0.35f));
+                        else if (objName.Contains("bush") || objName.Contains("arbusto") || objName.Contains("heather") || objName.Contains("fern") || objName.Contains("plant"))
+                            mats[i] = AssetDatabase.LoadAssetAtPath<Material>("Assets/Dados/Materiais/Mat_Arbusto_Cerrado.mat") ?? GetOrCreateMaterial("Mat_Arbusto_Cerrado", new Color(0.45f, 0.52f, 0.25f));
                         else
                             mats[i] = GetOrCreateMaterial("Mat_Elemento_Cerrado", new Color(0.55f, 0.50f, 0.40f));
 

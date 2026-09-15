@@ -175,8 +175,8 @@ namespace Cerrado.AI
                         return;
                     }
 
-                    // Chegou ao destino
-                    if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance + 0.3f)
+                    // Chegou ao destino (somente se estiver posicionado em uma NavMesh ativa)
+                    if (agent.isOnNavMesh && !agent.pathPending && agent.remainingDistance <= agent.stoppingDistance + 0.3f)
                     {
                         EnterState(AnimalState.Idle);
                     }
@@ -224,36 +224,46 @@ namespace Cerrado.AI
         {
             currentState = newState;
 
+            bool canNavigate = agent != null && agent.isOnNavMesh;
+
             switch (newState)
             {
                 case AnimalState.Idle:
-                    agent.isStopped = true;
-                    agent.speed = walkSpeed;
+                    if (canNavigate) agent.isStopped = true;
+                    if (agent != null) agent.speed = walkSpeed;
                     stateTimer = Random.Range(minIdleDuration, maxIdleDuration);
                     break;
 
                 case AnimalState.Wander:
-                    agent.isStopped = false;
-                    agent.speed = walkSpeed;
-                    SetRandomWanderDestination();
+                    if (canNavigate)
+                    {
+                        agent.isStopped = false;
+                        agent.speed = walkSpeed;
+                        SetRandomWanderDestination();
+                    }
                     break;
 
                 case AnimalState.Alert:
-                    agent.isStopped = true;
+                    if (canNavigate) agent.isStopped = true;
                     stateTimer = alertDuration;
                     break;
 
                 case AnimalState.Flee:
-                    agent.isStopped = false;
-                    agent.speed = fleeSpeed;
+                    if (canNavigate)
+                    {
+                        agent.isStopped = false;
+                        agent.speed = fleeSpeed;
+                        SetFleeDestination();
+                    }
                     stateTimer = 4.5f; // Foge por 4.5 segundos
-                    SetFleeDestination();
                     break;
             }
         }
 
         private void SetRandomWanderDestination()
         {
+            if (agent == null || !agent.isOnNavMesh) return;
+
             Vector3 randomDirection = Random.insideUnitSphere * wanderRadius;
             randomDirection += spawnOrigin;
 
@@ -265,7 +275,7 @@ namespace Cerrado.AI
 
         private void SetFleeDestination()
         {
-            if (playerTransform == null) return;
+            if (agent == null || !agent.isOnNavMesh || playerTransform == null) return;
 
             // Direção oposta ao jogador
             Vector3 fleeDirection = (transform.position - playerTransform.position).normalized;

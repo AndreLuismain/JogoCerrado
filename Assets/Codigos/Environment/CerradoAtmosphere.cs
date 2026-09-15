@@ -9,9 +9,9 @@ namespace Cerrado.Environment
     public class CerradoAtmosphere : MonoBehaviour
     {
         [Header("Configurações de Névoa")]
-        [SerializeField] private bool enableGroundMist = true;
-        [SerializeField] private Color mistColor = new Color(0.92f, 0.88f, 0.80f, 0.22f);
-        [SerializeField] private float mistAreaSize = 60f;
+        [SerializeField] private bool enableGroundMist = false; // Desativada por padrão para não poluir visão; sutil se ativada
+        [SerializeField] private Color mistColor = new Color(0.92f, 0.88f, 0.80f, 0.05f);
+        [SerializeField] private float mistAreaSize = 40f;
 
         private ParticleSystem mistParticles;
 
@@ -28,29 +28,28 @@ namespace Cerrado.Environment
             var existing = transform.Find("Cerrado_Nevoa_Chao");
             if (existing != null)
             {
-                mistParticles = existing.GetComponent<ParticleSystem>();
-                return;
+                DestroyImmediate(existing.gameObject);
             }
 
             var mistObj = new GameObject("Cerrado_Nevoa_Chao");
             mistObj.transform.SetParent(transform);
-            mistObj.transform.localPosition = new Vector3(0f, 0.5f, 0f);
+            mistObj.transform.localPosition = new Vector3(0f, 0.2f, 0f);
 
             mistParticles = mistObj.AddComponent<ParticleSystem>();
             var main = mistParticles.main;
-            main.startLifetime = 12f;
-            main.startSpeed = 0.25f;
-            main.startSize = new ParticleSystem.MinMaxCurve(6f, 14f);
+            main.startLifetime = 8f;
+            main.startSpeed = 0.15f;
+            main.startSize = new ParticleSystem.MinMaxCurve(1.5f, 3.5f);
             main.startColor = mistColor;
-            main.maxParticles = 60;
+            main.maxParticles = 20;
             main.simulationSpace = ParticleSystemSimulationSpace.World;
 
             var emission = mistParticles.emission;
-            emission.rateOverTime = 4f;
+            emission.rateOverTime = 1f;
 
             var shape = mistParticles.shape;
             shape.shapeType = ParticleSystemShapeType.Box;
-            shape.scale = new Vector3(mistAreaSize, 0.8f, mistAreaSize);
+            shape.scale = new Vector3(mistAreaSize, 0.4f, mistAreaSize);
 
             // Sprite sheet 8x8
             var tsa = mistParticles.textureSheetAnimation;
@@ -81,6 +80,10 @@ namespace Cerrado.Environment
             particleMat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
             particleMat.SetInt("_ZWrite", 0);
             particleMat.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
+            particleMat.SetOverrideTag("RenderType", "Transparent");
+            particleMat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+            particleMat.DisableKeyword("_SURFACE_TYPE_OPAQUE");
+            particleMat.EnableKeyword("_BLENDMODE_ALPHA");
 
 #if UNITY_EDITOR
             var smokeTex = UnityEditor.AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/TerrainSampleAssets/Textures/VFX/WispySmoke01_8x8.tga");
