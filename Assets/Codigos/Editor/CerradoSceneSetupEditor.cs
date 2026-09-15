@@ -87,13 +87,17 @@ namespace Cerrado.EditorTools
 
             try
             {
-                // 1. Atmosfera e Névoa
+                // 1. Corrigir materiais rosa (incompatíveis com URP) em todos os modelos da cena
+                int fixedMats = FixAllPinkMaterialsInScene();
+
+                // 2. Atmosfera e Névoa
                 GameObject ambObj = GameObject.Find("_Ambiente");
                 if (ambObj == null) ambObj = new GameObject("_Ambiente");
-                GetOrAddComponent<CerradoAtmosphere>(ambObj);
+                var atm = GetOrAddComponent<CerradoAtmosphere>(ambObj);
+                atm.SetupMistParticleSystem();
                 GetOrAddComponent<TerrainTreeToggle>(ambObj);
 
-                // 2. Poeira nos Animais
+                // 3. Poeira nos Animais
                 var animals = Object.FindObjectsByType<AnimalAI>(FindObjectsInactive.Include);
                 int count = 0;
                 foreach (var a in animals)
@@ -102,13 +106,14 @@ namespace Cerrado.EditorTools
                     count++;
                 }
 
-                // 3. Marcadores de Cenário (SceneAnnotation)
+                // 4. Marcadores de Cenário (SceneAnnotation)
                 SetupSceneBookmarks();
 
                 UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(UnityEngine.SceneManagement.SceneManager.GetActiveScene());
 
                 EditorUtility.DisplayDialog("Cerrado Engine",
                     $"Novos efeitos aplicados com sucesso no cenário atual!\n\n" +
+                    $"• {fixedMats} materiais incompatíveis (rosa) corrigidos para shaders nativos URP Lit\n" +
                     $"• Névoa volumétrica do Cerrado (WispySmoke) configurada em '_Ambiente'\n" +
                     $"• Rastro de poeira avermelhada (AnimalDustTrail) adicionado a {count} animais\n" +
                     $"• Marcadores de cenário (SceneAnnotation) criados em '_Marcadores_Cenário'\n" +
@@ -117,6 +122,105 @@ namespace Cerrado.EditorTools
             finally
             {
                 Undo.CollapseUndoOperations(undoGroup);
+            }
+        }
+
+        [MenuItem("Cerrado/6. Corrigir Materiais Rosa (Shaders URP)")]
+        public static void FixMaterialsMenu()
+        {
+            int count = FixAllPinkMaterialsInScene();
+            EditorUtility.DisplayDialog("Cerrado Engine", $"{count} materiais incompatíveis foram convertidos para materiais URP Lit com sucesso!", "OK");
+        }
+
+        public static int FixAllPinkMaterialsInScene()
+        {
+            var renderers = Object.FindObjectsByType<Renderer>(FindObjectsInactive.Include);
+            int fixedCount = 0;
+            foreach (var r in renderers)
+            {
+                if (r is ParticleSystemRenderer) continue;
+
+                var mats = r.sharedMaterials;
+                if (mats == null || mats.Length == 0) continue;
+
+                bool modified = false;
+                for (int i = 0; i < mats.Length; i++)
+                {
+                    if (mats[i] == null || mats[i].shader == null || 
+                        mats[i].shader.name.StartsWith("Hidden/InternalErrorShader") ||
+                        mats[i].shader.name == "Hidden/DefaultErrorShader" ||
+                        !mats[i].shader.name.Contains("Universal Render Pipeline"))
+                    {
+                        string objName = r.gameObject.name.ToLower();
+                        Transform p = r.transform.parent;
+                        while (p != null && !objName.Contains("tamandua") && !objName.Contains("ema") && !objName.Contains("lobo") && !objName.Contains("jatoba") && !objName.Contains("npc"))
+                        {
+                            objName += " " + p.gameObject.name.ToLower();
+                            p = p.parent;
+                        }
+
+                        if (objName.Contains("tamandua"))
+                            mats[i] = GetOrCreateMaterial("Mat_Tamandua_Bandeira", new Color(0.46f, 0.36f, 0.26f));
+                        else if (objName.Contains("ema"))
+                            mats[i] = GetOrCreateMaterial("Mat_Ema", new Color(0.42f, 0.42f, 0.46f));
+                        else if (objName.Contains("lobo"))
+                            mats[i] = GetOrCreateMaterial("Mat_Lobo_Guara", new Color(0.82f, 0.44f, 0.18f));
+                        else if (objName.Contains("jatoba"))
+                            mats[i] = GetOrCreateMaterial("Mat_Jatoba", new Color(0.35f, 0.48f, 0.20f));
+                        else if (objName.Contains("npc"))
+                            mats[i] = GetOrCreateMaterial("Mat_NPC_Pesquisador", new Color(0.30f, 0.45f, 0.65f));
+                        else
+                            mats[i] = GetOrCreateMaterial("Mat_Elemento_Cerrado", new Color(0.55f, 0.50f, 0.40f));
+
+                        modified = true;
+                        fixedCount++;
+                    }
+                }
+                if (modified)
+                {
+                    r.sharedMaterials = mats;
+                    EditorUtility.SetDirty(r);
+                }
+            }
+            AssetDatabase.SaveAssets();
+            return fixedCount;
+        }
+
+        public static void FixModelMaterials(GameObject root, Color fallbackColor, string matName)
+        {
+            if (root == null) return;
+
+            Material sharedMat = GetOrCreateMaterial(matName, fallbackColor);
+            var renderers = root.GetComponentsInChildren<Renderer>(true);
+            foreach (var r in renderers)
+            {
+                if (r is ParticleSystemRenderer) continue;
+
+                var mats = r.sharedMaterials;
+                if (mats == null || mats.Length == 0)
+                {
+                    r.sharedMaterial = sharedMat;
+                    EditorUtility.SetDirty(r);
+                    continue;
+                }
+
+                bool modified = false;
+                for (int i = 0; i < mats.Length; i++)
+                {
+                    if (mats[i] == null || mats[i].shader == null || 
+                        mats[i].shader.name.StartsWith("Hidden/InternalErrorShader") ||
+                        mats[i].shader.name == "Hidden/DefaultErrorShader" ||
+                        !mats[i].shader.name.Contains("Universal Render Pipeline"))
+                    {
+                        mats[i] = sharedMat;
+                        modified = true;
+                    }
+                }
+                if (modified)
+                {
+                    r.sharedMaterials = mats;
+                    EditorUtility.SetDirty(r);
+                }
             }
         }
 
@@ -132,10 +236,30 @@ namespace Cerrado.EditorTools
 
         private static Material GetOrCreateMaterial(string name, Color color)
         {
-            Shader shader = Shader.Find("Universal Render Pipeline/Lit") ?? Shader.Find("Standard") ?? Shader.Find("Diffuse");
-            Material mat = new Material(shader);
-            mat.name = name;
-            mat.color = color;
+            string dir = "Assets/Dados/Materiais";
+            if (!AssetDatabase.IsValidFolder("Assets/Dados/Materiais"))
+            {
+                if (!AssetDatabase.IsValidFolder("Assets/Dados")) AssetDatabase.CreateFolder("Assets", "Dados");
+                AssetDatabase.CreateFolder("Assets/Dados", "Materiais");
+            }
+
+            string path = $"{dir}/{name}.mat";
+            Material mat = AssetDatabase.LoadAssetAtPath<Material>(path);
+            if (mat == null)
+            {
+                Shader shader = Shader.Find("Universal Render Pipeline/Lit") ?? Shader.Find("Standard") ?? Shader.Find("Diffuse");
+                mat = new Material(shader);
+                mat.name = name;
+                mat.color = color;
+                if (mat.HasProperty("_BaseColor")) mat.SetColor("_BaseColor", color);
+                AssetDatabase.CreateAsset(mat, path);
+            }
+            else
+            {
+                mat.color = color;
+                if (mat.HasProperty("_BaseColor")) mat.SetColor("_BaseColor", color);
+                EditorUtility.SetDirty(mat);
+            }
             return mat;
         }
 
@@ -336,13 +460,14 @@ namespace Cerrado.EditorTools
                 {
                     npcObj = (GameObject)PrefabUtility.InstantiatePrefab(npcPrefab);
                     npcObj.name = "NPC_Pesquisador";
+                    FixModelMaterials(npcObj, new Color(0.25f, 0.45f, 0.70f), "Mat_NPC_Pesquisador");
                 }
                 else
                 {
                     npcObj = GameObject.CreatePrimitive(PrimitiveType.Capsule);
                     npcObj.name = "NPC_Pesquisador";
                     var rnd = npcObj.GetComponent<MeshRenderer>();
-                    if (rnd != null) rnd.sharedMaterial = GetOrCreateMaterial("Mat_Biólogo", new Color(0.2f, 0.45f, 0.75f));
+                    if (rnd != null) rnd.sharedMaterial = GetOrCreateMaterial("Mat_NPC_Pesquisador", new Color(0.25f, 0.45f, 0.70f));
                 }
             }
 
@@ -499,6 +624,7 @@ namespace Cerrado.EditorTools
             {
                 animalObj = (GameObject)PrefabUtility.InstantiatePrefab(modelPrefab, parent);
                 animalObj.name = name;
+                FixModelMaterials(animalObj, placeholderColor, "Mat_" + name);
             }
             else
             {
@@ -548,6 +674,7 @@ namespace Cerrado.EditorTools
             {
                 plantObj = (GameObject)PrefabUtility.InstantiatePrefab(modelPrefab, parent);
                 plantObj.name = name;
+                FixModelMaterials(plantObj, new Color(0.35f, 0.48f, 0.20f), "Mat_" + name);
             }
             else
             {

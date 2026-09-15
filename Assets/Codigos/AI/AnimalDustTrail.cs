@@ -37,6 +37,13 @@ namespace Cerrado.AI
 
         private void SetupDustParticleSystem()
         {
+            var existing = transform.Find("Poeira_Cerrado");
+            if (existing != null)
+            {
+                dustSystem = existing.GetComponent<ParticleSystem>();
+                return;
+            }
+
             var dustObj = new GameObject("Poeira_Cerrado");
             dustObj.transform.SetParent(transform);
             dustObj.transform.localPosition = new Vector3(0f, 0.05f, -0.2f);
@@ -81,14 +88,27 @@ namespace Cerrado.AI
 
             var renderer = dustObj.GetComponent<ParticleSystemRenderer>();
             Shader particleShader = Shader.Find("Universal Render Pipeline/Particles/Unlit") ??
+                                    Shader.Find("Universal Render Pipeline/Particles/Simple Lit") ??
                                     Shader.Find("Particles/Standard Unlit");
 
             Material mat = new Material(particleShader);
+            mat.SetFloat("_Surface", 1f); // Transparent
+            mat.SetFloat("_Blend", 0f); // Alpha
+            mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+            mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+            mat.SetInt("_ZWrite", 0);
+            mat.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
+
 #if UNITY_EDITOR
             var tex = UnityEditor.AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/TerrainSampleAssets/Textures/VFX/WispySmoke02_8x8.tga");
-            if (tex != null) mat.mainTexture = tex;
+            if (tex != null)
+            {
+                mat.mainTexture = tex;
+                if (mat.HasProperty("_BaseMap")) mat.SetTexture("_BaseMap", tex);
+            }
 #endif
             mat.color = dustColor;
+            if (mat.HasProperty("_BaseColor")) mat.SetColor("_BaseColor", dustColor);
             renderer.material = mat;
         }
     }

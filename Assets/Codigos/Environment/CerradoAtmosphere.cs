@@ -25,6 +25,13 @@ namespace Cerrado.Environment
 
         public void SetupMistParticleSystem()
         {
+            var existing = transform.Find("Cerrado_Nevoa_Chao");
+            if (existing != null)
+            {
+                mistParticles = existing.GetComponent<ParticleSystem>();
+                return;
+            }
+
             var mistObj = new GameObject("Cerrado_Nevoa_Chao");
             mistObj.transform.SetParent(transform);
             mistObj.transform.localPosition = new Vector3(0f, 0.5f, 0f);
@@ -64,14 +71,27 @@ namespace Cerrado.Environment
 
             var renderer = mistObj.GetComponent<ParticleSystemRenderer>();
             Shader particleShader = Shader.Find("Universal Render Pipeline/Particles/Unlit") ??
+                                    Shader.Find("Universal Render Pipeline/Particles/Simple Lit") ??
                                     Shader.Find("Particles/Standard Unlit");
 
             Material particleMat = new Material(particleShader);
+            particleMat.SetFloat("_Surface", 1f); // Transparent
+            particleMat.SetFloat("_Blend", 0f); // Alpha
+            particleMat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+            particleMat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+            particleMat.SetInt("_ZWrite", 0);
+            particleMat.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
+
 #if UNITY_EDITOR
             var smokeTex = UnityEditor.AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/TerrainSampleAssets/Textures/VFX/WispySmoke01_8x8.tga");
-            if (smokeTex != null) particleMat.mainTexture = smokeTex;
+            if (smokeTex != null)
+            {
+                particleMat.mainTexture = smokeTex;
+                if (particleMat.HasProperty("_BaseMap")) particleMat.SetTexture("_BaseMap", smokeTex);
+            }
 #endif
             particleMat.color = mistColor;
+            if (particleMat.HasProperty("_BaseColor")) particleMat.SetColor("_BaseColor", mistColor);
             renderer.material = particleMat;
         }
     }
