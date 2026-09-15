@@ -169,6 +169,5 @@ Packages/packages-lock.json linguist-generated
 
 # Exceptions for .asset files such as lightning pre-baking and terrain data
 LightingData.asset        binary
-New\ Terrain*.asset       binary
-Terrain*.asset            binary
+*Terrain*.asset           binary
 *.terrainlayer            binary
