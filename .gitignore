@@ -42,8 +42,10 @@
 # Jetbrains Rider personal-layer settings
 *.DotSettings.user
 
-# Visual Studio cache directory
+# Visual Studio / VS Code cache and workspace files
 .vs/
+.vscode/
+*.code-workspace
 
 # Gradle cache directory
 .gradle/
