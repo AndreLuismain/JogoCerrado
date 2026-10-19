@@ -4,7 +4,7 @@ Este diretório concentra todos os scripts **C#** do projeto **EICerrado**, orga
 
 ---
 
-## 🧭 Mapeamento de Subpastas e Módulos
+## Mapeamento de Subpastas e Módulos
 
 | Subpasta | Namespace | Scripts Principais | Responsabilidade e Conceitos Aplicados |
 |---|---|---|---|

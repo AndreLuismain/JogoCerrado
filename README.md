@@ -1,18 +1,10 @@
 # EICerrado — Jogo Educativo 3D de Exploração e Fotografia Ambiental
 
-<div align="center">
-
-[![Unity](https://img.shields.io/badge/Unity-6000.x%20%7C%20URP-000000.svg?style=for-the-badge&logo=unity&logoColor=white)](https://unity.com/)
-[![C#](https://img.shields.io/badge/C%23-.NET%20Standard%202.1-239120.svg?style=for-the-badge&logo=c-sharp&logoColor=white)](https://learn.microsoft.com/dotnet/csharp/)
-[![ICMC-USP](https://img.shields.io/badge/ICMC--USP-Pesquisa%20%26%20Extensão-red.svg?style=for-the-badge)](https://www.icmc.usp.br/)
-
-</div>
-
 **EICerrado** é um jogo 3D educativo de exploração em mundo aberto e simulação fotográfica desenvolvido na engine **Unity (Universal Render Pipeline — URP)** em **C#**, voltado à conscientização ambiental sobre a fauna e a flora do bioma **Cerrado brasileiro**. Desenvolvido no contexto acadêmico da **Universidade de São Paulo (USP)** para estudantes de 12 a 18 anos, o projeto combina mecânicas de *collection-based gameplay*, Inteligência Artificial comportamental e catalogação científica.
 
 ---
 
-## 🧭 Índice de Navegação dos Módulos de Código (`Assets/Codigos`)
+## Índice de Navegação dos Módulos de Código (`Assets/Codigos`)
 
 Documentação detalhada dos scripts disponível em **[`Assets/Codigos/README.md`](./Assets/Codigos/README.md)**.
 
@@ -34,7 +26,7 @@ Documentação detalhada dos scripts disponível em **[`Assets/Codigos/README.md
 
 ---
 
-## 🏗️ Arquitetura de Software e Padrões de Projeto
+## Arquitetura de Software e Padrões de Projeto
 
 ```mermaid
 flowchart LR
@@ -76,7 +68,7 @@ flowchart LR
 
 ---
 
-## 🚀 Como Executar o Projeto no Unity Editor
+## Como Executar o Projeto no Unity Editor
 
 ### Pré-requisitos
 * **Unity Hub** instalado.
@@ -97,6 +89,6 @@ flowchart LR
 
 ---
 
-## 👥 Autoria e Responsabilidades Técnicas
+## Autoria e Responsabilidades Técnicas
 
 * **André Luís da Silva Souza** ([@AndreLuismain](https://github.com/AndreLuismain) — Sistemas de Informação, ICMC-USP): Arquitetura de software, programação de todos os sistemas em C# (IA, fotografia, álbum, missões, economia, persistência e ferramentas de Editor) e modelagem 3D base no Blender.
