@@ -2094,7 +2094,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31e7391434a58b1469bacc5554033e7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::menu_principal
-  nomeDoLevel: jogo_inicio
+  nomeDoLevel: SampleScene
   painel_menu_principal: {fileID: 679452617}
   painel_opcoes: {fileID: 1078101660}
   painel_extras: {fileID: 450269470}

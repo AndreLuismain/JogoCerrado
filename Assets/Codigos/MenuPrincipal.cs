@@ -6,9 +6,13 @@ public class MenuPrincipal : MonoBehaviour
     // Função para iniciar o jogo
     public void Jogar()
     {
-        // O Unity vai carregar a cena chamada "Fase1"
-        // (Lembre-se de criar uma cena com esse exato nome depois)
-        SceneManager.LoadScene("Fase1"); 
+        SceneManager.LoadScene("Assets/Scenes/SampleScene.unity");
+    }
+
+    // Função para retornar ao menu principal
+    public void VoltarAoMenu()
+    {
+        SceneManager.LoadScene("Assets/Jogo/Menu/menu_cena.unity");
     }
 
     // Função opcional para fechar o jogo

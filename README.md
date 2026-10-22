@@ -22,7 +22,22 @@ Documentação detalhada dos scripts disponível em **[`Assets/Codigos/README.md
 | **[`Assets/Codigos/Interaction/`](./Assets/Codigos/Interaction/)** | `Cerrado.Interaction` | Sistema de interação com NPCs (Guia Ambiental e Loja de Equipamentos). |
 | **[`Assets/Codigos/Exploration/`](./Assets/Codigos/Exploration/)** | `Cerrado.Exploration` | Barreiras de progressão (`AreaBarrier`) desbloqueadas conforme o avanço no Álbum de Espécies. |
 | **[`Assets/Codigos/UI/`](./Assets/Codigos/UI/)** | `Cerrado.UI` | HUD do visor fotográfico, interface do Álbum, Loja e rastreador de missões desacoplados via *Observer Pattern* (`event Action`). |
+| **[`Assets/Jogo/Menu/scripts/`](./Assets/Jogo/Menu/scripts/)** | Global / `Cerrado` | Controlador do Menu Principal (`menu_principal.cs` e `MenuPrincipal.cs`), gerenciamento de painéis de Opções, Extras/Créditos e transição de cenas (`SceneManager`) para a expedição principal. |
+| **[`Assets/StarterAssets/`](./Assets/StarterAssets/)** | `StarterAssets` | Controladores base em terceira pessoa (`ThirdPersonController`), integração com `InputSystem` (`StarterAssetsInputs`) e prefabs utilitários de movimentação e câmera. |
 | **[`Assets/Codigos/Editor/`](./Assets/Codigos/Editor/)** | `Cerrado.Editor` | Ferramentas customizadas de automação para o Unity Editor (geração e configuração de cenas, missões e itens de loja). |
+
+---
+
+## Estrutura de Cenas e Recursos do Projeto (`Assets/`)
+
+| Diretório / Recurso | Descrição Técnica |
+|---|---|
+| **[`Assets/Jogo/Menu/`](./Assets/Jogo/Menu/)** | Cena de abertura (`menu_cena.unity`) intitulada *"Pra lá do Cerrado"*, equipada com painel principal, menu de configurações de volume, tela de créditos/extras, logos institucionais (`logo_eic.png`, `logousppbsite.png`), *skybox* customizado e fontes tipográficas (`Rockwell`, `Times New Roman` e `Playfair Display SDF`). |
+| **[`Assets/Scenes/SampleScene.unity`](./Assets/Scenes/SampleScene.unity)** | Cena principal de gameplay no bioma Cerrado, contendo terreno estilizado, vegetação nativa com recorte alfa (*Alpha Clipping*), névoa volumétrica rasteira (`CerradoAtmosphere`), fauna com IA e rastro de poeira (`AnimalDustTrail`), pontos de interesse (`SceneAnnotation`), NPC Biólogo Guia e interface completa. |
+| **[`Assets/Jogo/Cutscene Inicial/`](./Assets/Jogo/Cutscene Inicial/)** & **[`Jogo Inicio/`](./Assets/Jogo/Jogo%20Inicio/)** | Cenas complementares de introdução e transição configuradas no `EditorBuildSettings.asset`. |
+| **[`Assets/Dados/`](./Assets/Dados/)** | *ScriptableObjects* de espécies (`Angico`, `Aroeira`, `Jatoba`, `Ema`, `LoboGuara`, `TamanduaBandeira`), itens da loja (`LenteTeleobjetiva`, `LenteSuperTele`, `EstabilizadorFoco`, `SensorNoturno`, `MochilaExpandida`), missões pedagógicas e materiais URP do Cerrado. |
+| **[`Assets/TerrainSampleAssets/`](./Assets/TerrainSampleAssets/)** | Biblioteca de *assets* ambientais para esculpir e povoar o bioma: camadas de terreno (`TerrainLayers` e texturas `.tif`), pincéis de estampagem topográfica (`TerrainBrushes` e *heightmaps*), *Subgraphs* de *ShaderGraph* (vento, folhagem e água) e prefabs de rochas, arbustos, árvores e gramíneas convertidos para **URP Lit**. |
+| **[`Assets/TextMesh Pro/`](./Assets/TextMesh%20Pro/)** | Recursos essenciais do *TextMeshPro* (`TMP Settings.asset`), fontes SDF dinâmicas e estáticas (`LiberationSans SDF`, `Inter`, `PlayfairDisplay`), *shaders* de texto e pacotes de ícones/sprites. |
 
 ---
 
@@ -80,7 +95,9 @@ flowchart LR
    git clone https://github.com/AndreLuismain/JogoCerrado.git
    ```
 2. Abra o **Unity Hub**, clique em **Add -> Add project from disk** e selecione a pasta `JogoCerrado`.
-3. No Unity Editor, abra a cena principal em `Assets/Scenes/SampleScene.unity` (ou utilize o menu de automação customizado na barra superior `Cerrado -> Setup Completo da Cena`).
+3. No Unity Editor, você pode iniciar o jogo de duas formas:
+   * **Via Menu Principal:** Abra `Assets/Jogo/Menu/menu_cena.unity`, pressione **Play** e clique em **Jogar** para carregar a expedição no Cerrado (`SampleScene`), ou navegue pelas telas de **Configurar** e **Extras**.
+   * **Direto na Cena Principal:** Abra `Assets/Scenes/SampleScene.unity` (ou utilize o menu de automação customizado na barra superior `Cerrado -> 4. Montar Cena de Teste Completa (SampleScene)` / `5. Aplicar Novos Efeitos e Marcadores no Cenário Atual`).
 4. Pressione **Play** no Editor:
    * **Movimentação:** `W`, `A`, `S`, `D` | **Correr:** `Shift` | **Agachar (Furtivo):** `Ctrl` ou `C`
    * **Modo Fotografia:** Botão Direito do Mouse (`RMB`) para mirar | `Scroll` para Zoom Óptico | Botão Esquerdo (`LMB`) para fotografar
