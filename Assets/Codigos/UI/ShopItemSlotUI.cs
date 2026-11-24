@@ -64,7 +64,7 @@ namespace Cerrado.UI
                 buyButton.interactable = false;
                 if (buyButtonText != null)
                 {
-                    buyButtonText.text = "EQUIPADO ✓";
+                    buyButtonText.text = "EQUIPADO [OK]";
                     buyButtonText.color = ownedColor;
                 }
             }

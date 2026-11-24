@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b8878ebc96ec1b488348b2939932018, type: 3}
+  m_Name: Gravata
+  m_EditorClassIdentifier: Assembly-CSharp::Cerrado.Data.SpeciesData
+  id: gravata
+  commonName: "Gravat\xE1-do-cerrado"
+  scientificName: Bromelia balansae
+  category: 1
+  rarity: 1
+  activityTime: 2
+  educationalDescription: "Brom\xE9lia terrestre robusta com folhas espinhosas que formam rosetas vermelhas na flora\xE7\xE3o. Acumula \xE1gua da chuva e serve de abrigo para pequenos anf\xEDbios e insetos."
+  habitatDescription: "Sub-bosque de cerrad\xE3o e bordas de mata."
+  conservationStatus: Pouco Preocupante (LC)
+  baseScore: 150
+  baseCoins: 15
+  minIdealDistance: 2
+  maxIdealDistance: 12
+  targetRadius: 1
+  icon: {fileID: 21300000, guid: 52add8c196675b94ab04669a4cb7d871, type: 3}

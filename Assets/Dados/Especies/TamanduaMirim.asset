@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b8878ebc96ec1b488348b2939932018, type: 3}
+  m_Name: TamanduaMirim
+  m_EditorClassIdentifier: Assembly-CSharp::Cerrado.Data.SpeciesData
+  id: tamandua_mirim
+  commonName: "Tamandu\xE1-mirim"
+  scientificName: Tamandua tetradactyla
+  category: 0
+  rarity: 1
+  activityTime: 2
+  educationalDescription: "Conhecido como mixila ou tamandu\xE1-de-colete pelo desenho escuro no dorso. \xC9 \xE1gil tanto no ch\xE3o quanto em \xE1rvores, ca\xE7ando formigas e cupins com sua cauda pre\xEAnsil."
+  habitatDescription: "Cerrado t\xEDpico, matas de galeria e bordas florestais."
+  conservationStatus: Pouco Preocupante (LC)
+  baseScore: 220
+  baseCoins: 24
+  minIdealDistance: 3
+  maxIdealDistance: 14
+  targetRadius: 0.9
+  icon: {fileID: 21300000, guid: 8e2c0f069c7554b4797d6a6737e850bb, type: 3}

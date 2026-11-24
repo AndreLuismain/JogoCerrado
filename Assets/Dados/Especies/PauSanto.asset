@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b8878ebc96ec1b488348b2939932018, type: 3}
+  m_Name: PauSanto
+  m_EditorClassIdentifier: Assembly-CSharp::Cerrado.Data.SpeciesData
+  id: pau_santo
+  commonName: Pau-santo
+  scientificName: Kielmeyera coriacea
+  category: 1
+  rarity: 2
+  activityTime: 2
+  educationalDescription: "\xC1rvore cl\xE1ssica do Cerrado com casca suberosa espessa (corti\xE7a natural) que isola o tronco contra o calor das queimadas naturais da esta\xE7\xE3o seca."
+  habitatDescription: Cerrado sensu stricto e campos cerrados.
+  conservationStatus: Pouco Preocupante (LC)
+  baseScore: 205
+  baseCoins: 20
+  minIdealDistance: 4.5
+  maxIdealDistance: 20
+  targetRadius: 2.5
+  icon: {fileID: 21300000, guid: 6b4238ac0fae7f34ea388e59e06bfe40, type: 3}

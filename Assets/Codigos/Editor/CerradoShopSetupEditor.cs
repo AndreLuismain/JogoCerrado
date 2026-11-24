@@ -93,7 +93,10 @@ namespace Cerrado.EditorTools
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
 
-            EditorUtility.DisplayDialog("Cerrado Engine", "Itens da loja criados com sucesso na pasta 'Assets/Dados/Loja'!", "OK");
+            if (!Application.isBatchMode && !CerradoSetupEditor.SuppressDialogs)
+            {
+                EditorUtility.DisplayDialog("Cerrado Engine", "Itens da loja criados com sucesso na pasta 'Assets/Dados/Loja'!", "OK");
+            }
         }
 
         private static void CreateOrUpdateItem(

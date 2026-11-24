@@ -12,19 +12,19 @@ namespace Cerrado.Environment
         [SerializeField] private float dayDurationInMinutes = 12f;
         [Tooltip("Hora inicial do dia (0 a 24)")]
         [Range(0f, 24f)]
-        [SerializeField] private float currentHour = 9f; // Começa às 9h da manhã
+        [SerializeField] private float currentHour = 17.0f; // Fim de tarde dourado do Cerrado (harmonizado com evening_field_8k)
         [SerializeField] private bool timeProgressionEnabled = true;
 
         [Header("Iluminação Direcional (Sol / Lua)")]
         [SerializeField] private Light directionalLight;
-        [SerializeField] private float maxSunIntensity = 1.3f;
+        [SerializeField] private float maxSunIntensity = 1.35f;
         [SerializeField] private float minMoonIntensity = 0.2f;
 
         [Header("Gradiente de Cores do Céu do Cerrado")]
-        [SerializeField] private Color dawnColor = new Color(1.0f, 0.75f, 0.5f);     // Alvorecer dourado
-        [SerializeField] private Color dayColor = new Color(1.0f, 0.98f, 0.90f);     // Meio-dia límpido
-        [SerializeField] private Color sunsetColor = new Color(1.0f, 0.45f, 0.2f);   // Pôr do sol alaranjado (estilo Zelda TOTK)
-        [SerializeField] private Color nightColor = new Color(0.2f, 0.35f, 0.65f);   // Noite azulada com luar
+        [SerializeField] private Color dawnColor = new Color(1.0f, 0.78f, 0.52f);     // Alvorecer dourado
+        [SerializeField] private Color dayColor = new Color(1.0f, 0.96f, 0.88f);      // Meio-dia límpido
+        [SerializeField] private Color sunsetColor = new Color(1.0f, 0.68f, 0.38f);   // Fim de tarde quente do Cerrado
+        [SerializeField] private Color nightColor = new Color(0.24f, 0.38f, 0.68f);   // Noite azulada com luar
 
         // Eventos
         public static event Action<float, bool> OnTimeChanged;

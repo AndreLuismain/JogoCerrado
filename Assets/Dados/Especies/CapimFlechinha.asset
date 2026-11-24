@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b8878ebc96ec1b488348b2939932018, type: 3}
+  m_Name: CapimFlechinha
+  m_EditorClassIdentifier: Assembly-CSharp::Cerrado.Data.SpeciesData
+  id: capim_flechinha
+  commonName: Capim-flechinha
+  scientificName: Tristachya leiostachya
+  category: 1
+  rarity: 0
+  activityTime: 2
+  educationalDescription: "Gram\xEDnea nativa alta que d\xE1 o tom dourado caracter\xEDstico \xE0s savanas do Cerrado, servindo de abrigo e alimento para aves campestres e pequenos mam\xEDferos."
+  habitatDescription: Campos limpos e campos cerrados.
+  conservationStatus: Pouco Preocupante (LC)
+  baseScore: 100
+  baseCoins: 10
+  minIdealDistance: 2
+  maxIdealDistance: 10
+  targetRadius: 0.9
+  icon: {fileID: 21300000, guid: 86d89f566ea55704d8c8eb8c6362459e, type: 3}

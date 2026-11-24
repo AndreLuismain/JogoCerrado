@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b8878ebc96ec1b488348b2939932018, type: 3}
+  m_Name: CorujaBuraqueira
+  m_EditorClassIdentifier: Assembly-CSharp::Cerrado.Data.SpeciesData
+  id: coruja_buraqueira
+  commonName: Coruja-buraqueira
+  scientificName: Athene cunicularia
+  category: 0
+  rarity: 1
+  activityTime: 2
+  educationalDescription: "Diferente da maioria das corujas, \xE9 facilmente observada durante o dia vigiando seus ninhos cavados no solo ou em cupinzeiros abandonados."
+  habitatDescription: "Campos limpos e \xE1reas abertas de capim baixo."
+  conservationStatus: Pouco Preocupante (LC)
+  baseScore: 240
+  baseCoins: 25
+  minIdealDistance: 3
+  maxIdealDistance: 14
+  targetRadius: 0.55
+  icon: {fileID: 21300000, guid: 735a8ff781393bc4ab73cde574cfff10, type: 3}

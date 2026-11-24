@@ -167,7 +167,8 @@ Packages/packages-lock.json linguist-generated
 # Spine export file for Unity
 *.skel.bytes            lfs
 
-# Exceptions for .asset files such as lightning pre-baking and terrain data
+# Exceptions for .asset files such as lightning pre-baking, terrain data and large 3D meshes (>100MB)
 LightingData.asset        binary
 *Terrain*.asset           binary
 *.terrainlayer            binary
+Assets/Modelos/**/Meshes/*.asset lfs

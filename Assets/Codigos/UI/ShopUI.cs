@@ -146,6 +146,7 @@ namespace Cerrado.UI
                 if (item == null) continue;
 
                 GameObject slotObj = Instantiate(itemSlotPrefab, itemsContainer);
+                slotObj.SetActive(true);
                 var slotUI = slotObj.GetComponent<ShopItemSlotUI>();
                 if (slotUI != null)
                 {

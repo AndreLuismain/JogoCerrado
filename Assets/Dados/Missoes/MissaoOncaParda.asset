@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aaf45bfcb72cbf8439af0613d6cd61dc, type: 3}
+  m_Name: MissaoOncaParda
+  m_EditorClassIdentifier: Assembly-CSharp::Cerrado.Quests.QuestData
+  id: quest_onca_parda
+  title: 'Predador do Topo: Suçuarana'
+  description: 'Use furtividade máxima (Ctrl) e zoom para registrar a rara Onça-parda com no mínimo 3 estrelas.'
+  targetSpecies: {fileID: 11400000, guid: eccfdaa4406f63d7ac60f15595090291, type: 2}
+  minStarsRequired: 3
+  requiresNight: 0
+  rewardCoins: 220
+  unlockedAreaId: 

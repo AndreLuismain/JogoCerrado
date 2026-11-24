@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b8878ebc96ec1b488348b2939932018, type: 3}
+  m_Name: Barbatimao
+  m_EditorClassIdentifier: Assembly-CSharp::Cerrado.Data.SpeciesData
+  id: barbatimao
+  commonName: "Barbatim\xE3o"
+  scientificName: Stryphnodendron adstringens
+  category: 1
+  rarity: 1
+  activityTime: 2
+  educationalDescription: "Esp\xE9cie medicinal nativa de casca rugosa muito rica em taninos cicatrizantes, resistente ao fogo e caracter\xEDstica das fisionomias abertas do bioma."
+  habitatDescription: "Campos cerrados e cerrad\xF5es."
+  conservationStatus: Pouco Preocupante (LC)
+  baseScore: 135
+  baseCoins: 14
+  minIdealDistance: 4
+  maxIdealDistance: 18
+  targetRadius: 2.6
+  icon: {fileID: 21300000, guid: be52909478946824da536428ebd37837, type: 3}

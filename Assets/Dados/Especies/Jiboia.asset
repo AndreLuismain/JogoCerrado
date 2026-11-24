@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b8878ebc96ec1b488348b2939932018, type: 3}
+  m_Name: Jiboia
+  m_EditorClassIdentifier: Assembly-CSharp::Cerrado.Data.SpeciesData
+  id: jiboia
+  commonName: Jiboia-do-cerrado
+  scientificName: Boa constrictor
+  category: 0
+  rarity: 2
+  activityTime: 2
+  educationalDescription: "Serpente n\xE3o pe\xE7onhenta de grande porte que ca\xE7a por constri\xE7\xE3o. Sua camuflagem perfeita no solo seco e galhos a torna uma predadora essencial no equil\xEDbrio de roedores."
+  habitatDescription: "Cerrad\xE3o, matas secas e \xE1reas com vegeta\xE7\xE3o densa."
+  conservationStatus: Pouco Preocupante (LC)
+  baseScore: 340
+  baseCoins: 36
+  minIdealDistance: 3
+  maxIdealDistance: 13
+  targetRadius: 1
+  icon: {fileID: 21300000, guid: 3348e1a60c2e0d34ea599cbd8191fe93, type: 3}

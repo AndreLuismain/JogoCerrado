@@ -26,4 +26,4 @@ MonoBehaviour:
   minIdealDistance: 5
   maxIdealDistance: 20
   targetRadius: 2.8
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: ab212e48c04b9fa40a5de52d81034461, type: 3}

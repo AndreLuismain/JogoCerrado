@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b8878ebc96ec1b488348b2939932018, type: 3}
+  m_Name: JacarePapoAmarelo
+  m_EditorClassIdentifier: Assembly-CSharp::Cerrado.Data.SpeciesData
+  id: jacare_papo_amarelo
+  commonName: "Jacar\xE9-de-papo-amarelo"
+  scientificName: Caiman latirostris
+  category: 0
+  rarity: 1
+  activityTime: 2
+  educationalDescription: "R\xE9ptil semi-aqu\xE1tico de focinho largo encontrado em veredas, lagoas e rios que cortam o Cerrado. Atua no equil\xEDbrio ecol\xF3gico controlando popula\xE7\xF5es de peixes e invertebrados."
+  habitatDescription: Veredas, brejos e margens de rios do Cerrado.
+  conservationStatus: Pouco Preocupante (LC)
+  baseScore: 260
+  baseCoins: 28
+  minIdealDistance: 4
+  maxIdealDistance: 16
+  targetRadius: 1.4
+  icon: {fileID: 21300000, guid: 8dac319016d05ac43ac2e890c3b863b0, type: 3}

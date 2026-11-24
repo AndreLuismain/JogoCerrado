@@ -3,16 +3,29 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Cerrado.Photography;
+using Cerrado.Album;
 
 namespace Cerrado.UI
 {
+    /// <summary>
+    /// Visor fotográfico clássico em branco (estilo viewfinder de câmera/filmadora):
+    /// cantoneiras brancas, retículo central '+', indicador '● REC', barra técnica superior
+    /// ('HD | 4K | ZOOM' + bateria) e ícone discreto acima do alvo indicando se já foi catalogado ou é novo.
+    /// Sem quadrado verde em volta do alvo.
+    /// </summary>
     public class PhotoViewfinderUI : MonoBehaviour
     {
-        [Header("Elementos do Visor")]
+        [Header("Elementos do Visor Branco")]
         [SerializeField] private GameObject viewfinderContainer;
-        [SerializeField] private RectTransform focusFrame;
+        [SerializeField] private RectTransform targetStatusBadge;
+        [SerializeField] private Image targetStatusBg;
+        [SerializeField] private TMP_Text targetStatusIconText;
+        [SerializeField] private TMP_Text targetStatusLabelText;
         [SerializeField] private TMP_Text targetNameText;
+        [SerializeField] private Image targetIconImage;
         [SerializeField] private TMP_Text zoomLevelText;
+        [SerializeField] private TMP_Text recTimerText;
+        [SerializeField] private Image recDotImage;
         [SerializeField] private Image crosshairImage;
 
         [Header("Efeito de Flash")]
@@ -29,31 +42,26 @@ namespace Cerrado.UI
         [SerializeField] private TMP_Text feedbackText;
         [SerializeField] private float resultDisplayDuration = 3.5f;
 
-        [Header("Cores")]
-        [SerializeField] private Color lockedFocusColor = new Color(0.2f, 0.9f, 0.3f, 0.9f);
-        [SerializeField] private Color idleFocusColor = new Color(1f, 1f, 1f, 0.5f);
+        [Header("Cores (Estilo Viewfinder Branco)")]
+        [SerializeField] private Color activeReticleColor = new Color(1f, 1f, 1f, 0.96f);
+        [SerializeField] private Color idleReticleColor = new Color(1f, 1f, 1f, 0.72f);
+        [SerializeField] private Color catalogedBadgeColor = new Color(0.14f, 0.52f, 0.48f, 0.88f);
+        [SerializeField] private Color newSpeciesBadgeColor = new Color(0.92f, 0.62f, 0.12f, 0.92f);
 
         private Camera mainCam;
+        private PhotoCameraSystem cachedCameraSystem;
         private Coroutine resultCoroutine;
+        private float aimElapsedSeconds;
 
         private void Awake()
         {
             mainCam = Camera.main;
+            cachedCameraSystem = FindAnyObjectByType<PhotoCameraSystem>();
 
-            if (viewfinderContainer != null)
-            {
-                viewfinderContainer.SetActive(false);
-            }
-
-            if (resultPanel != null)
-            {
-                resultPanel.SetActive(false);
-            }
-
-            if (flashCanvasGroup != null)
-            {
-                flashCanvasGroup.alpha = 0f;
-            }
+            if (viewfinderContainer != null) viewfinderContainer.SetActive(false);
+            if (targetStatusBadge != null) targetStatusBadge.gameObject.SetActive(false);
+            if (resultPanel != null) resultPanel.SetActive(false);
+            if (flashCanvasGroup != null) flashCanvasGroup.alpha = 0f;
         }
 
         private void OnEnable()
@@ -72,29 +80,85 @@ namespace Cerrado.UI
 
         private void Update()
         {
-            // Se o visor estiver ativo e houver alvo focado, posiciona a caixa de foco sobre o alvo na tela
-            if (viewfinderContainer != null && viewfinderContainer.activeSelf && focusFrame != null)
-            {
-                var cameraSystem = FindAnyObjectByType<PhotoCameraSystem>();
-                if (cameraSystem != null && cameraSystem.CurrentFocusedTarget != null && mainCam != null)
-                {
-                    Vector3 screenPoint = mainCam.WorldToScreenPoint(cameraSystem.CurrentFocusedTarget.FocalPoint);
-                    focusFrame.position = screenPoint;
-                    focusFrame.gameObject.SetActive(true);
+            if (viewfinderContainer == null || !viewfinderContainer.activeSelf) return;
 
-                    if (zoomLevelText != null)
+            if (mainCam == null) mainCam = Camera.main;
+            if (cachedCameraSystem == null) cachedCameraSystem = FindAnyObjectByType<PhotoCameraSystem>();
+
+            // Atualiza relógio REC e ponto vermelho piscante
+            aimElapsedSeconds += Time.unscaledDeltaTime;
+            if (recTimerText != null)
+            {
+                int totalSec = Mathf.FloorToInt(aimElapsedSeconds);
+                int mins = (totalSec / 60) % 60;
+                int secs = totalSec % 60;
+                int frames = Mathf.FloorToInt((aimElapsedSeconds - totalSec) * 30f);
+                recTimerText.text = $"00:{mins:00}:{secs:00}:{frames:00}";
+            }
+            if (recDotImage != null)
+            {
+                float pulse = Mathf.PingPong(Time.unscaledTime * 1.8f, 1f);
+                Color c = recDotImage.color;
+                c.a = Mathf.Lerp(0.35f, 1f, pulse);
+                recDotImage.color = c;
+            }
+
+            if (cachedCameraSystem != null && zoomLevelText != null)
+            {
+                float zoomMultiplier = 1f + (cachedCameraSystem.CurrentZoomRatio * 3f);
+                zoomLevelText.text = $"HD  |  4K  |  {zoomMultiplier:F1}x";
+            }
+
+            // Posiciona APENAS o ícone discreto de status ACIMA do alvo focado (sem quadrado verde!)
+            if (targetStatusBadge != null)
+            {
+                var target = cachedCameraSystem != null ? cachedCameraSystem.CurrentFocusedTarget : null;
+                if (target != null && target.Species != null && mainCam != null)
+                {
+                    float verticalLift = Mathf.Clamp(target.Species.TargetRadius * 0.72f, 0.55f, 3.8f);
+                    Vector3 worldAbove = target.FocalPoint + Vector3.up * verticalLift;
+                    Vector3 screenPoint = mainCam.WorldToScreenPoint(worldAbove);
+
+                    if (screenPoint.z > 0.1f)
                     {
-                        float zoomMultiplier = 1f + (cameraSystem.CurrentZoomRatio * 3f);
-                        zoomLevelText.text = $"{zoomMultiplier:F1}x";
+                        screenPoint.x = Mathf.Clamp(screenPoint.x, 90f, Screen.width - 90f);
+                        screenPoint.y = Mathf.Clamp(screenPoint.y, 90f, Screen.height - 90f);
+                        targetStatusBadge.position = screenPoint;
+                        targetStatusBadge.gameObject.SetActive(true);
+                        RefreshTargetStatusVisual(target);
+                    }
+                    else
+                    {
+                        targetStatusBadge.gameObject.SetActive(false);
                     }
                 }
                 else
                 {
-                    if (focusFrame != null)
-                    {
-                        focusFrame.gameObject.SetActive(false);
-                    }
+                    targetStatusBadge.gameObject.SetActive(false);
                 }
+            }
+        }
+
+        private void RefreshTargetStatusVisual(PhotographableTarget target)
+        {
+            if (target == null || target.Species == null) return;
+
+            bool isCataloged = AlbumManager.Instance != null && AlbumManager.Instance.IsSpeciesDiscovered(target.Species.Id);
+
+            if (targetStatusBg != null)
+            {
+                targetStatusBg.color = isCataloged ? catalogedBadgeColor : newSpeciesBadgeColor;
+            }
+
+            if (targetStatusIconText != null)
+            {
+                // Ícone limpo compatível com LiberationSans SDF (sem glifos quebrados)
+                targetStatusIconText.text = isCataloged ? "OK" : "!";
+            }
+
+            if (targetStatusLabelText != null)
+            {
+                targetStatusLabelText.text = isCataloged ? "CATALOGADA" : "NOVA";
             }
         }
 
@@ -104,49 +168,55 @@ namespace Cerrado.UI
             {
                 viewfinderContainer.SetActive(isAiming);
             }
+            if (!isAiming && targetStatusBadge != null)
+            {
+                targetStatusBadge.gameObject.SetActive(false);
+            }
         }
 
         private void HandleTargetFocusChanged(PhotographableTarget target)
         {
             if (target != null && target.Species != null)
             {
+                bool isCataloged = AlbumManager.Instance != null && AlbumManager.Instance.IsSpeciesDiscovered(target.Species.Id);
+
                 if (targetNameText != null)
                 {
-                    targetNameText.text = $"{target.Species.CommonName} [{target.Species.Rarity}]";
+                    string statusTag = isCataloged ? "[CATALOGADA]" : "[NOVA ESPÉCIE]";
+                    targetNameText.text = $"{target.Species.CommonName}  ·  {target.Species.Rarity}  {statusTag}";
                     targetNameText.gameObject.SetActive(true);
                 }
 
-                if (crosshairImage != null)
+                if (targetIconImage != null)
                 {
-                    crosshairImage.color = lockedFocusColor;
-                }
-            }
-            else
-            {
-                if (targetNameText != null)
-                {
-                    targetNameText.gameObject.SetActive(false);
+                    targetIconImage.sprite = target.Species.Icon;
+                    targetIconImage.preserveAspect = true;
+                    targetIconImage.gameObject.SetActive(target.Species.Icon != null);
                 }
 
                 if (crosshairImage != null)
                 {
-                    crosshairImage.color = idleFocusColor;
+                    crosshairImage.color = activeReticleColor;
                 }
+
+                RefreshTargetStatusVisual(target);
+            }
+            else
+            {
+                if (targetNameText != null) targetNameText.gameObject.SetActive(false);
+                if (targetIconImage != null) targetIconImage.gameObject.SetActive(false);
+                if (targetStatusBadge != null) targetStatusBadge.gameObject.SetActive(false);
+                if (crosshairImage != null) crosshairImage.color = idleReticleColor;
             }
         }
 
         private void HandlePhotoTaken(PhotoResult result)
         {
-            // Dispara efeito de Flash
             StartCoroutine(PlayFlashEffect());
 
-            // Mostra o painel de avaliação
             if (resultPanel != null)
             {
-                if (resultCoroutine != null)
-                {
-                    StopCoroutine(resultCoroutine);
-                }
+                if (resultCoroutine != null) StopCoroutine(resultCoroutine);
                 resultCoroutine = StartCoroutine(ShowResultPanelRoutine(result));
             }
         }
@@ -169,34 +239,22 @@ namespace Cerrado.UI
             resultPanel.SetActive(true);
 
             if (photoThumbnail != null && result.PhotoTexture != null)
-            {
                 photoThumbnail.texture = result.PhotoTexture;
-            }
 
             if (speciesNameResultText != null)
-            {
                 speciesNameResultText.text = result.Species != null ? result.Species.CommonName : "Paisagem";
-            }
 
             if (scoreText != null)
-            {
                 scoreText.text = $"Pontos: {result.TotalScore}";
-            }
 
             if (coinsText != null)
-            {
                 coinsText.text = $"+{result.CoinsEarned} Moedas";
-            }
 
             if (starsText != null)
-            {
-                starsText.text = new string('★', result.Stars) + new string('☆', 5 - result.Stars);
-            }
+                starsText.text = new string('*', result.Stars) + new string('.', 5 - result.Stars);
 
             if (feedbackText != null)
-            {
                 feedbackText.text = result.FeedbackMessage;
-            }
 
             yield return new WaitForSeconds(resultDisplayDuration);
 
@@ -204,4 +262,3 @@ namespace Cerrado.UI
         }
     }
 }
-

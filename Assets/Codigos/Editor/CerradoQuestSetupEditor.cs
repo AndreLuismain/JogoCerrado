@@ -26,6 +26,8 @@ namespace Cerrado.EditorTools
             SpeciesData ema = AssetDatabase.LoadAssetAtPath<SpeciesData>("Assets/Dados/Especies/Ema.asset");
             SpeciesData lobo = AssetDatabase.LoadAssetAtPath<SpeciesData>("Assets/Dados/Especies/LoboGuara.asset");
             SpeciesData jatoba = AssetDatabase.LoadAssetAtPath<SpeciesData>("Assets/Dados/Especies/Jatoba.asset");
+            SpeciesData onca = AssetDatabase.LoadAssetAtPath<SpeciesData>("Assets/Dados/Especies/OncaParda.asset");
+            SpeciesData chuveirinho = AssetDatabase.LoadAssetAtPath<SpeciesData>("Assets/Dados/Especies/Chuveirinho.asset");
 
             // 1. Missão 1: Tamanduá
             CreateOrUpdateQuest(
@@ -79,10 +81,45 @@ namespace Cerrado.EditorTools
                 unlockedArea: ""
             );
 
+            // 5. Missão 5: Sempre-Viva Chuveirinho
+            if (chuveirinho != null)
+            {
+                CreateOrUpdateQuest(
+                    folderPath, "MissaoChuveirinho",
+                    id: "quest_chuveirinho",
+                    title: "Jóia dos Campos Rupestres",
+                    description: "Encontre e fotografe a Sempre-viva Chuveirinho com pelo menos 3 estrelas.",
+                    targetSpecies: chuveirinho,
+                    minStars: 3,
+                    nightOnly: false,
+                    rewardCoins: 90,
+                    unlockedArea: ""
+                );
+            }
+
+            // 6. Missão 6: Onça-parda
+            if (onca != null)
+            {
+                CreateOrUpdateQuest(
+                    folderPath, "MissaoOncaParda",
+                    id: "quest_onca_parda",
+                    title: "Predador do Topo: Suçuarana",
+                    description: "Use furtividade máxima (Ctrl) e zoom para registrar a rara Onça-parda com no mínimo 3 estrelas.",
+                    targetSpecies: onca,
+                    minStars: 3,
+                    nightOnly: false,
+                    rewardCoins: 220,
+                    unlockedArea: ""
+                );
+            }
+
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
 
-            EditorUtility.DisplayDialog("Cerrado Engine", "Missões criadas com sucesso na pasta 'Assets/Dados/Missoes'!", "OK");
+            if (!Application.isBatchMode && !CerradoSetupEditor.SuppressDialogs)
+            {
+                EditorUtility.DisplayDialog("Cerrado Engine", "Missões criadas com sucesso na pasta 'Assets/Dados/Missoes'!", "OK");
+            }
         }
 
         private static void CreateOrUpdateQuest(

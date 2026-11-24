@@ -36,6 +36,7 @@ namespace Cerrado.UI
         [Header("Painel Lateral de Detalhes")]
         [SerializeField] private GameObject detailsPanel;
         [SerializeField] private RawImage detailPhoto;
+        [SerializeField] private Image detailSpeciesIcon;
         [SerializeField] private TMP_Text detailCommonName;
         [SerializeField] private TMP_Text detailScientificName;
         [SerializeField] private TMP_Text detailRarity;
@@ -127,6 +128,7 @@ namespace Cerrado.UI
             if (albumPanel == null) return;
 
             albumPanel.SetActive(true);
+            Cerrado.Audio.CerradoAudioManager.Instance?.PlayPageFlip();
 
             if (playerController != null)
             {
@@ -161,6 +163,7 @@ namespace Cerrado.UI
         private void SetFilter(FilterCategory filter)
         {
             currentFilter = filter;
+            Cerrado.Audio.CerradoAudioManager.Instance?.PlayPageFlip();
             RefreshUI();
         }
 
@@ -233,10 +236,11 @@ namespace Cerrado.UI
                 if (firstEntry == null) firstEntry = entry;
 
                 GameObject slotObj = Instantiate(slotPrefab, gridContainer);
+                slotObj.SetActive(true);
                 var slotUI = slotObj.GetComponent<AlbumSlotUI>();
                 if (slotUI != null)
                 {
-                    slotUI.Setup(entry, DisplayDetails);
+                    slotUI.Setup(entry, OnSlotSelected);
                     spawnedSlots.Add(slotUI);
                 }
             }
@@ -250,6 +254,12 @@ namespace Cerrado.UI
             {
                 detailsPanel.SetActive(false);
             }
+        }
+
+        private void OnSlotSelected(AlbumEntry entry)
+        {
+            Cerrado.Audio.CerradoAudioManager.Instance?.PlayPageFlip();
+            DisplayDetails(entry);
         }
 
         public void DisplayDetails(AlbumEntry entry)
@@ -267,7 +277,7 @@ namespace Cerrado.UI
                 if (detailHabitat != null) detailHabitat.text = $"<b>Habitat:</b> {entry.Species.HabitatDescription}";
                 if (detailConservation != null) detailConservation.text = $"<b>Status:</b> {entry.Species.ConservationStatus}";
                 if (detailBestScore != null) detailBestScore.text = $"Melhor Foto: {entry.BestScore} pts (x{entry.TimesPhotographed} capturas)";
-                if (detailStars != null) detailStars.text = new string('★', entry.BestStars) + new string('☆', 5 - entry.BestStars);
+                if (detailStars != null) detailStars.text = new string('*', entry.BestStars) + new string('.', 5 - entry.BestStars);
                 if (detailCaptureDate != null) detailCaptureDate.text = $"Data: {entry.CaptureDate}";
 
                 if (detailPhoto != null)
@@ -278,6 +288,18 @@ namespace Cerrado.UI
                     {
                         detailPhoto.texture = photo;
                     }
+                    else if (entry.Species.Icon != null)
+                    {
+                        detailPhoto.texture = entry.Species.Icon.texture;
+                    }
+                }
+
+                if (detailSpeciesIcon != null)
+                {
+                    detailSpeciesIcon.gameObject.SetActive(entry.Species.Icon != null);
+                    detailSpeciesIcon.sprite = entry.Species.Icon;
+                    detailSpeciesIcon.color = Color.white;
+                    detailSpeciesIcon.preserveAspect = true;
                 }
             }
             else
@@ -289,12 +311,20 @@ namespace Cerrado.UI
                 if (detailHabitat != null) detailHabitat.text = "<b>Habitat:</b> Desconhecido";
                 if (detailConservation != null) detailConservation.text = "<b>Status:</b> ???";
                 if (detailBestScore != null) detailBestScore.text = "Ainda não fotografado";
-                if (detailStars != null) detailStars.text = "☆☆☆☆☆";
+                if (detailStars != null) detailStars.text = ".....";
                 if (detailCaptureDate != null) detailCaptureDate.text = "";
 
                 if (detailPhoto != null)
                 {
                     detailPhoto.gameObject.SetActive(false);
+                }
+
+                if (detailSpeciesIcon != null)
+                {
+                    detailSpeciesIcon.gameObject.SetActive(entry.Species.Icon != null);
+                    detailSpeciesIcon.sprite = entry.Species.Icon;
+                    detailSpeciesIcon.color = new Color(0.08f, 0.10f, 0.08f, 0.55f);
+                    detailSpeciesIcon.preserveAspect = true;
                 }
             }
         }

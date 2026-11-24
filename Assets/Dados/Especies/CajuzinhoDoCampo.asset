@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b8878ebc96ec1b488348b2939932018, type: 3}
+  m_Name: CajuzinhoDoCampo
+  m_EditorClassIdentifier: Assembly-CSharp::Cerrado.Data.SpeciesData
+  id: cajuzinho_do_campo
+  commonName: Cajuzinho-do-campo
+  scientificName: Anacardium humile
+  category: 1
+  rarity: 0
+  activityTime: 2
+  educationalDescription: "Arbusto rasteiro com caule subterr\xE2neo profundo adaptado ao fogo. Seus pequenos cajus vermelhos e doces s\xE3o ricos em vitamina C e alimentam aves e mam\xEDferos."
+  habitatDescription: Campos sujos e cerrados abertos.
+  conservationStatus: Pouco Preocupante (LC)
+  baseScore: 130
+  baseCoins: 13
+  minIdealDistance: 2
+  maxIdealDistance: 12
+  targetRadius: 1
+  icon: {fileID: 21300000, guid: acf80400ddb183c42b4146ed88cd0c60, type: 3}

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 using Cerrado.Quests;
 
@@ -28,11 +29,39 @@ namespace Cerrado.UI
             {
                 completionBanner.SetActive(false);
             }
+
+            ApplyWoodEarthyTheme();
         }
 
         private void Start()
         {
             UpdateQuestList();
+        }
+
+        private void ApplyWoodEarthyTheme()
+        {
+            if (questsContainer != null)
+            {
+                var bgImg = questsContainer.GetComponent<Image>();
+                if (bgImg != null)
+                {
+                    // Fundo amadeirado/terroso semitransparente harmonizado com o Menu e Opções
+                    bgImg.color = new Color(0.22f, 0.14f, 0.08f, 0.84f);
+                }
+
+                var outline = questsContainer.GetComponent<Outline>();
+                if (outline == null)
+                {
+                    outline = questsContainer.AddComponent<Outline>();
+                }
+                outline.effectColor = new Color(0.84f, 0.68f, 0.42f, 0.75f);
+                outline.effectDistance = new Vector2(2f, -2f);
+            }
+
+            if (questListText != null)
+            {
+                questListText.color = new Color(0.98f, 0.94f, 0.84f, 1f);
+            }
         }
 
         private void OnEnable()
@@ -70,18 +99,19 @@ namespace Cerrado.UI
             var activeQuests = QuestManager.Instance.ActiveQuests;
             if (activeQuests == null || activeQuests.Count == 0)
             {
-                questListText.text = "<b>Missões do Cerrado:</b>\n<i>Nenhuma missão ativa no momento. Fale com o Guia!</i>";
+                questListText.text = "<color=#F5DFA0><b>EXPEDIÇÃO CERRADO</b></color>\n<color=#E6D7B8><i>Todas as missões atuais foram concluídas! Fale com o Guia.</i></color>";
                 return;
             }
 
             var sb = new System.Text.StringBuilder();
-            sb.AppendLine("<b>MISSÕES ATIVAS:</b>");
+            sb.AppendLine("<size=108%><color=#F5DFA0><b>MISSÕES ATIVAS</b></color></size>");
+            sb.AppendLine("<size=75%><color=#C8A458AA>------------------------------</color></size>");
 
             foreach (var q in activeQuests)
             {
                 if (q == null) continue;
-                sb.AppendLine($"• <b>{q.Title}</b>");
-                sb.AppendLine($"   <size=85%>{q.Description}</size>");
+                sb.AppendLine($"<color=#F2C94C>></color> <color=#FFF6E0><b>{q.Title}</b></color>");
+                sb.AppendLine($"   <size=86%><color=#E5D6BA>{q.Description}</color></size>");
             }
 
             questListText.text = sb.ToString();
@@ -112,4 +142,3 @@ namespace Cerrado.UI
         }
     }
 }
-

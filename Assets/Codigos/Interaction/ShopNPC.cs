@@ -72,6 +72,12 @@ namespace Cerrado.Interaction
 
             if (isPlayerNearby)
             {
+                // Se houver um GuideNPC no mesmo objeto, o diálogo do guia gerencia a tecla [E] e possui botão para abrir a loja
+                if (GetComponent<GuideNPC>() != null)
+                {
+                    return;
+                }
+
                 bool interactPressed = false;
 
 #if ENABLE_INPUT_SYSTEM

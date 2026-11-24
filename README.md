@@ -1,111 +1,77 @@
-# EICerrado — Jogo Educativo 3D de Exploração e Fotografia Ambiental
+# EICerrado — Jogo Educativo 3D de Exploração e Fotografia Ambiental (Beta 1.0)
 
-**EICerrado** é um jogo 3D educativo de exploração em mundo aberto e simulação fotográfica desenvolvido na engine **Unity (Universal Render Pipeline — URP)** em **C#**, voltado à conscientização ambiental sobre a fauna e a flora do bioma **Cerrado brasileiro**. Desenvolvido no contexto acadêmico da **Universidade de São Paulo (USP)** para estudantes de 12 a 18 anos, o projeto combina mecânicas de *collection-based gameplay*, Inteligência Artificial comportamental e catalogação científica.
+**EICerrado** (*Pra lá do Cerrado — Expedição Fotográfica*) é um jogo educativo 3D em 1ª pessoa de exploração em mundo aberto e simulação fotográfica desenvolvido no **Unity 6 (Universal Render Pipeline — URP)** em **C#**, voltado à conscientização ambiental sobre a biodiversidade do **Cerrado brasileiro**. Desenvolvido no contexto acadêmico da **Universidade de São Paulo (USP)**, o projeto combina catalogação científica, IA comportamental de fauna silvestre e renderização PBR otimizada.
 
 ---
 
-## Índice de Navegação dos Módulos de Código (`Assets/Codigos`)
+## Destaques da Versão Beta (`v1.0.0-beta`)
 
-Documentação detalhada dos scripts disponível em **[`Assets/Codigos/README.md`](./Assets/Codigos/README.md)**.
+* **38 Espécies Nativas Catalogáveis com Ícones (18 Fauna + 20 Flora):**
+  * **Fauna (18):** Tamanduá-bandeira, Tamanduá-mirim, Lobo-guará, Onça-parda (Suçuarana animada com 53 *BlendShapes*), Ema, Seriema, Veado-campeiro, Jacaré-do-papo-amarelo, Tatu-peba, Tapiti (Coelho-do-mato), Macaco-prego, Teiú, Carcará, Coruja-buraqueira, Galito, Rato-de-espinho, Jiboia e Cascavel.
+  * **Flora (20):** Ipê-amarelo, Pequizeiro, Jatobá, Barbatimão, Angico, Aroeira, Araticum, Cajuzinho-do-campo, Canela-de-ema, Capim-flechinha, Catuaba, Cinzeiro, Copaíba, Gravatá, Indaiá, Lobeira, Pau-santo, Sucupira, Sempre-viva Chuveirinho e Árvore Tortuosa do Cerrado.
+* **IA Naturalista + `FootPlanter` + Ciclo de Borda:**
+  * Máquina de estados (`Idle`, `Wander`, `Alert`, `Flee`) sobre `NavMesh` estendida até o cinturão florestal (`126x120m`), alinhamento suave de patas e inclinação ao relevo (`FootPlanter.cs`) e ciclo contínuo de travessia da cerca com reentrada natural pelo lado oposto da mata.
+  * **Biólogo Guia (`Prof. Silva`):** NPC Humanoid animado (`CharacterIdle` / conversa) que olha suavemente para o explorador, orienta as 6 missões ecológicas e gerencia a loja de equipamentos fotográficos.
+* **Renderização URP Customizada & 4 Perfis Gráficos (`Baixa`, `Média`, `Alta`, `Muito Alta`):**
+  * **Shaders HLSL URP dedicados:** `CerradoTerrainBlendURP.shader` (transição orgânica *World-Space FBM Noise* entre terra seca e grama + mascaramento físico com tufos, arbustos, pedras e palhada) e `CerradoFoliageWindURP.shader` (translucidez solar *subsurface*, dupla face, *Alpha Clipping* BC7/Kaiser e vento orgânico em espaço de mundo).
+  * **Perfil Showcase (`Muito Alta` — RTX 5070):** *Render Scale* `1.25x`, `MSAA 4x`, Sombras `4096` *Soft High* (`250m`, 4 cascatas), **SSAO em alta qualidade** (`DepthNormals`), **Depth of Field (Bokeh)** dinâmico na mira fotográfica, `ReflectionProbe` + `LightProbeGroup`, *Bloom*, *Tonemapping ACES* e *Vignette* (*Motion Blur* desativado).
+* **Tipografia Acessível (`TextMeshPro` SDF PT-BR Completo) & Onboarding:**
+  * Hierarquia tipográfica com **Rubik / Fredoka** para títulos, botões e cabeçalhos e **Lexend** como fonte padrão de leitura científica e HUD, com suporte integral à acentuação em português.
+  * **Configurações Persistentes (`GameSettingsManager`):** seletor de qualidade gráfica em tempo real, sliders independentes de *Volume da Música* e *Ambiente / Efeitos* e campo numérico digitável de *Sensibilidade do Mouse* (`0.1` a `10.0`, com redução proporcional durante o zoom óptico).
+  * **Tutorial Interativo na Primeira Entrada (`TutorialOverlayUI`):** guia rápido em 3 passos ao iniciar a expedição (reabrível a qualquer momento no menu de Opções).
 
-| Módulo / Diretório | Namespace | Resumo Técnico e Conceitos de Engenharia |
+---
+
+## Índice dos Módulos de Código (`Assets/Codigos`)
+
+Documentação complementar dos scripts em **[`Assets/Codigos/README.md`](./Assets/Codigos/README.md)**.
+
+| Módulo / Diretório | Namespace | Resumo Técnico |
 |---|---|---|
-| **[`Assets/Codigos/Photography/`](./Assets/Codigos/Photography/)** | `Cerrado.Photography` | Sistema de câmera com zoom óptico (FOV dinâmico), *Raycasting* anti-oclusão, avaliação matemática de enquadramento/distância e captura em `RenderTexture`/`Texture2D`. |
-| **[`Assets/Codigos/AI/`](./Assets/Codigos/AI/)** | `Cerrado.AI` | Máquina de Estados Finitos (FSM: `Idle`, `Wander`, `Alert`, `Flee`) integrada ao `NavMeshAgent`, com sensibilidade furtiva e perfis de temperamento (`Docil`, `Cauteloso`, `Arisco`). |
-| **[`Assets/Codigos/Album/`](./Assets/Codigos/Album/)** | `Cerrado.Album` | Catálogo enciclopédico reativo que registra a melhor fotografia de cada espécie, pontuação e progresso de descoberta do bioma. |
-| **[`Assets/Codigos/Data/`](./Assets/Codigos/Data/)** | `Cerrado.Data` | Modelagem *Data-Driven* com `ScriptableObject` (`SpeciesData`) para atributos biológicos, nome científico, raridade e valor pedagógico. |
-| **[`Assets/Codigos/Economy/`](./Assets/Codigos/Economy/)** | `Cerrado.Economy` | Sistema de economia e upgrades de equipamento (lentes teleobjetivas, estabilizadores de foco e botas furtivas). |
-| **[`Assets/Codigos/Quests/`](./Assets/Codigos/Quests/)** | `Cerrado.Quests` | Motor de missões orientado a eventos (`OnPhotoTaken`) que guia a investigação ecológica do jogador. |
-| **[`Assets/Codigos/Persistence/`](./Assets/Codigos/Persistence/)** | `Cerrado.Persistence` | Persistência local em JSON (`cerrado_save.json`) e exportação das fotos capturadas pelo jogador em arquivos `.jpg` no disco (`Application.persistentDataPath`). |
-| **[`Assets/Codigos/Environment/`](./Assets/Codigos/Environment/)** | `Cerrado.Environment` | Ciclo dinâmico de dia e noite (`DayNightCycle`), atmosfera do Cerrado e gerenciamento de vegetação. |
-| **[`Assets/Codigos/Player/`](./Assets/Codigos/Player/)** | `Cerrado.Player` | Controlador de movimentação 3D, mecânica de furtividade (redução de ruído/detecção pela fauna) e integração com o Unity Input System. |
-| **[`Assets/Codigos/Interaction/`](./Assets/Codigos/Interaction/)** | `Cerrado.Interaction` | Sistema de interação com NPCs (Guia Ambiental e Loja de Equipamentos). |
-| **[`Assets/Codigos/Exploration/`](./Assets/Codigos/Exploration/)** | `Cerrado.Exploration` | Barreiras de progressão (`AreaBarrier`) desbloqueadas conforme o avanço no Álbum de Espécies. |
-| **[`Assets/Codigos/UI/`](./Assets/Codigos/UI/)** | `Cerrado.UI` | HUD do visor fotográfico, interface do Álbum, Loja e rastreador de missões desacoplados via *Observer Pattern* (`event Action`). |
-| **[`Assets/Jogo/Menu/scripts/`](./Assets/Jogo/Menu/scripts/)** | Global / `Cerrado` | Controlador do Menu Principal (`menu_principal.cs` e `MenuPrincipal.cs`), gerenciamento de painéis de Opções, Extras/Créditos e transição de cenas (`SceneManager`) para a expedição principal. |
-| **[`Assets/StarterAssets/`](./Assets/StarterAssets/)** | `StarterAssets` | Controladores base em terceira pessoa (`ThirdPersonController`), integração com `InputSystem` (`StarterAssetsInputs`) e prefabs utilitários de movimentação e câmera. |
-| **[`Assets/Codigos/Editor/`](./Assets/Codigos/Editor/)** | `Cerrado.Editor` | Ferramentas customizadas de automação para o Unity Editor (geração e configuração de cenas, missões e itens de loja). |
+| **[`Assets/Codigos/Photography/`](./Assets/Codigos/Photography/)** | `Cerrado.Photography` | Câmera fotográfica com zoom óptico, detecção por *Raycast*, cálculo de pontuação/estrelas e captura em `Texture2D`. |
+| **[`Assets/Codigos/AI/`](./Assets/Codigos/AI/)** | `Cerrado.AI` | `AnimalAI` (FSM + ciclo de borda), `AnimalSpawner`, `FootPlanter` (alinhamento ao terreno) e `OncaBlendShapeController` (53 *BlendShapes*). |
+| **[`Assets/Codigos/Album/`](./Assets/Codigos/Album/)** | `Cerrado.Album` | Caderno de campo científico com filtros (`Todas`, `Fauna`, `Flora`), busca de espécies catalogadas e registro da melhor captura. |
+| **[`Assets/Codigos/Settings/`](./Assets/Codigos/Settings/)** | `Cerrado.Settings` | `GameSettingsManager` persistente (`PlayerPrefs`) sincronizando 4 perfis URP, DoF na mira, volumes separados e sensibilidade. |
+| **[`Assets/Codigos/Audio/`](./Assets/Codigos/Audio/)** | `Cerrado.Audio` | `CerradoAudioManager` com trilha regional (*Sons do Cerrado*), passos dinâmicos na terra e sons de interface em canais independentes. |
+| **[`Assets/Codigos/UI/`](./Assets/Codigos/UI/)** | `Cerrado.UI` | Visor fotográfico clássico branco (`PhotoViewfinderUI`), `AlbumUI`, `ShopUI`, `QuestHUDUI`, `PauseMenuUI`, `SettingsPanelUI` e `TutorialOverlayUI`. |
+| **[`Assets/Codigos/Data/`](./Assets/Codigos/Data/)** | `Cerrado.Data` | `ScriptableObjects` (`SpeciesData`, `QuestData`, `ShopItemData`) desacoplando dados biológicos e pedagógicos da lógica. |
+| **[`Assets/Codigos/Persistence/`](./Assets/Codigos/Persistence/)** | `Cerrado.Persistence` | Salvamento local em JSON (`cerrado_save.json`) e exportação das fotos capturadas em `.jpg` (`Application.persistentDataPath`). |
+| **[`Assets/Codigos/Editor/`](./Assets/Codigos/Editor/)** | `Cerrado.EditorTools` | Automação completa de cenas (`CerradoSceneSetupEditor`), migração/validação URP (`CerradoMigrationEditor`), fontes (`CerradoFontSetupEditor`) e build/ZIP (`CerradoBetaBuildEditor`). |
 
 ---
 
-## Estrutura de Cenas e Recursos do Projeto (`Assets/`)
+## Estrutura Principal de Recursos (`Assets/`)
 
-| Diretório / Recurso | Descrição Técnica |
-|---|---|
-| **[`Assets/Jogo/Menu/`](./Assets/Jogo/Menu/)** | Cena de abertura (`menu_cena.unity`) intitulada *"Pra lá do Cerrado"*, equipada com painel principal, menu de configurações de volume, tela de créditos/extras, logos institucionais (`logo_eic.png`, `logousppbsite.png`), *skybox* customizado e fontes tipográficas (`Rockwell`, `Times New Roman` e `Playfair Display SDF`). |
-| **[`Assets/Scenes/SampleScene.unity`](./Assets/Scenes/SampleScene.unity)** | Cena principal de gameplay no bioma Cerrado, contendo terreno estilizado, vegetação nativa com recorte alfa (*Alpha Clipping*), névoa volumétrica rasteira (`CerradoAtmosphere`), fauna com IA e rastro de poeira (`AnimalDustTrail`), pontos de interesse (`SceneAnnotation`), NPC Biólogo Guia e interface completa. |
-| **[`Assets/Jogo/Cutscene Inicial/`](./Assets/Jogo/Cutscene Inicial/)** & **[`Jogo Inicio/`](./Assets/Jogo/Jogo%20Inicio/)** | Cenas complementares de introdução e transição configuradas no `EditorBuildSettings.asset`. |
-| **[`Assets/Dados/`](./Assets/Dados/)** | *ScriptableObjects* de espécies (`Angico`, `Aroeira`, `Jatoba`, `Ema`, `LoboGuara`, `TamanduaBandeira`), itens da loja (`LenteTeleobjetiva`, `LenteSuperTele`, `EstabilizadorFoco`, `SensorNoturno`, `MochilaExpandida`), missões pedagógicas e materiais URP do Cerrado. |
-| **[`Assets/TerrainSampleAssets/`](./Assets/TerrainSampleAssets/)** | Biblioteca de *assets* ambientais para esculpir e povoar o bioma: camadas de terreno (`TerrainLayers` e texturas `.tif`), pincéis de estampagem topográfica (`TerrainBrushes` e *heightmaps*), *Subgraphs* de *ShaderGraph* (vento, folhagem e água) e prefabs de rochas, arbustos, árvores e gramíneas convertidos para **URP Lit**. |
-| **[`Assets/TextMesh Pro/`](./Assets/TextMesh%20Pro/)** | Recursos essenciais do *TextMeshPro* (`TMP Settings.asset`), fontes SDF dinâmicas e estáticas (`LiberationSans SDF`, `Inter`, `PlayfairDisplay`), *shaders* de texto e pacotes de ícones/sprites. |
+* **`Assets/Jogo/Menu/menu_cena.unity`** — Cena inicial (índice `0` no Build Settings) com Menu Principal, Configurações completas e Créditos institucionais USP/EIC.
+* **`Assets/Scenes/SampleScene.unity`** — Cena principal da Reserva Biológica do Cerrado (índice `1`), com terreno orgânico mesclado, 92 entidades ativas (44 animais + 48 espécimes catalogáveis de flora), ~3.500 elementos de vegetação com *GPU Instancing* e perímetro florestal de 4 camadas.
+* **`Assets/Dados/Shaders/`** — Shaders URP HLSL customizados (`CerradoTerrainBlendURP.shader` e `CerradoFoliageWindURP.shader`).
+* **`Assets/Fontes/`** — Famílias tipográficas **Rubik**, **Fredoka** e **Lexend** (`.ttf` + licenças `OFL.txt`) e ativos SDF gerados em `Assets/Fontes/SDF/`.
+* **`Assets/Settings/`** — Perfis URP dedicados (`URP_Baixa`, `URP_Media`, `URP_Alta`, `URP_MuitoAlta`), *Renderers* com SSAO escalonado e *Volume Profiles*.
 
 ---
 
-## Arquitetura de Software e Padrões de Projeto
+## Como Executar ou Gerar a Build
 
-```mermaid
-flowchart LR
-    subgraph INPUT ["Jogador & Câmera"]
-        PC["PlayerController<br/>Movimentação & Furtividade"]
-        CAM["PhotoCameraSystem<br/>Zoom FOV & Raycast"]
-        EVAL["PhotoEvaluator<br/>Cálculo de Score e Foco"]
-    end
+### Jogando a Build Windows x64 (Pronta para Uso)
+1. Extraia o arquivo compactado **`Builds/EICerrado_Beta_Win64.zip`** (ou `.rar`) em qualquer pasta do computador.
+2. Execute **`EICerrado.exe`** com dois cliques.
 
-    subgraph WORLD ["Ecossistema Cerrado"]
-        AI["AnimalAI (FSM + NavMesh)<br/>Idle / Wander / Alert / Flee"]
-        SO["SpeciesData (ScriptableObject)<br/>Fauna & Flora Nativa"]
-    end
+### Abrindo e Compilando no Unity Editor
+1. Instale o **Unity 6 (`6000.6.0f1` ou compatível 6000.x LTS)** com suporte a **Windows Build Support (Mono/IL2CPP)** via Unity Hub.
+2. Abra a pasta raiz `JogoCerrado` no Unity Hub.
+3. Para validar ou regerar automaticamente a build Windows x64 + pacote `.zip` + instalador Inno Setup, utilize o menu superior:
+   * **`Cerrado -> 7. Gerar Build Beta Windows x64 + ZIP`**
+   * **`Cerrado -> 9. Validar Migração e Cenas (Diagnóstico)`**
 
-    subgraph CORE ["Sistemas de Progressão"]
-        ALB["AlbumManager<br/>Catálogo & Descobertas"]
-        QST["QuestManager<br/>Missões Pedagógicas"]
-        ECO["EquipmentManager<br/>Loja & Upgrades"]
-        SAVE["SaveSystem<br/>JSON + Fotos JPG"]
-    end
-
-    PC --> CAM
-    CAM --> EVAL
-    AI --- SO
-    EVAL -->|Evento OnPhotoTaken| ALB
-    EVAL -->|Evento OnPhotoTaken| QST
-    ALB --> SAVE
-    QST --> ECO
-    ECO -->|Upgrade de Lente/Furtividade| CAM
-    ECO -->|Upgrade de Furtividade| PC
-```
-
-1. **Observer Pattern (Arquitetura Orientada a Eventos):**
-   * O sistema fotográfico (`PhotoCameraSystem`) publica eventos estáticos (`OnPhotoTaken`, `OnAimStateChanged`, `OnTargetFocusChanged`). O `AlbumManager`, o `QuestManager` e as classes de `UI` reagem às capturas sem acoplamento direto entre os componentes.
-2. **Data-Driven Design com `ScriptableObjects`:**
-   * Novas espécies da fauna (Capivara, Tamanduá-bandeira, Tamanduá-mirim, Lobo-guará) e da flora (Ipê-amarelo, Sucupira, Aroeira), bem como missões (`QuestData`) e itens de loja (`ShopItemData`), são criados como *assets* independentes no Inspector, evitando alterações em código para expansão de conteúdo.
-3. **Máquina de Estados Finitos (FSM) na IA da Fauna:**
-   * Cada animal avalia continuamente a distância até o jogador e se o jogador está em modo furtivo (`IsCrouching`), alternando entre patrulha orgânica (`Wander`), estado de atenção (`Alert`) e evasão em direção oposta (`Flee`) sobre a malha de navegação (`NavMesh`).
+### Controles Principais
+* **Caminhar / Correr / Agachar (Furtivo):** `W, A, S, D` | `Shift` | `Ctrl`
+* **Câmera Fotográfica:** Segurar `Botão Direito (RMB)` para mirar | `Scroll` para Zoom | `Botão Esquerdo (LMB)` para fotografar
+* **Álbum do Cerrado:** `TAB` ou `J`
+* **Interagir com o Biólogo Guia / Loja:** `E`
+* **Pausa / Configurações:** `ESC` ou `P`
 
 ---
 
-## Como Executar o Projeto no Unity Editor
+## Créditos Institucionais
 
-### Pré-requisitos
-* **Unity Hub** instalado.
-* **Unity Editor 6000.0+ (Unity 6 LTS)** ou **2022.3 LTS+** com suporte a **Universal Render Pipeline (URP)**.
-
-### Passo a Passo
-1. Clone o repositório:
-   ```powershell
-   git clone https://github.com/AndreLuismain/JogoCerrado.git
-   ```
-2. Abra o **Unity Hub**, clique em **Add -> Add project from disk** e selecione a pasta `JogoCerrado`.
-3. No Unity Editor, você pode iniciar o jogo de duas formas:
-   * **Via Menu Principal:** Abra `Assets/Jogo/Menu/menu_cena.unity`, pressione **Play** e clique em **Jogar** para carregar a expedição no Cerrado (`SampleScene`), ou navegue pelas telas de **Configurar** e **Extras**.
-   * **Direto na Cena Principal:** Abra `Assets/Scenes/SampleScene.unity` (ou utilize o menu de automação customizado na barra superior `Cerrado -> 4. Montar Cena de Teste Completa (SampleScene)` / `5. Aplicar Novos Efeitos e Marcadores no Cenário Atual`).
-4. Pressione **Play** no Editor:
-   * **Movimentação:** `W`, `A`, `S`, `D` | **Correr:** `Shift` | **Agachar (Furtivo):** `Ctrl` ou `C`
-   * **Modo Fotografia:** Botão Direito do Mouse (`RMB`) para mirar | `Scroll` para Zoom Óptico | Botão Esquerdo (`LMB`) para fotografar
-   * **Álbum Enciclopédico:** Tecla `Tab` ou `J`
-   * **Interagir com NPCs (Guia / Loja):** Tecla `E`
-
----
-
-## Autoria e Responsabilidades Técnicas
-
-* **André Luís da Silva Souza** ([@AndreLuismain](https://github.com/AndreLuismain) — Sistemas de Informação, ICMC-USP): Arquitetura de software, programação de todos os sistemas em C# (IA, fotografia, álbum, missões, economia, persistência e ferramentas de Editor) e modelagem 3D base no Blender.
+* **Universidade de São Paulo (USP)** — Projeto Educativo de Exploração e Fotografia Ambiental no Cerrado (*EICerrado*).

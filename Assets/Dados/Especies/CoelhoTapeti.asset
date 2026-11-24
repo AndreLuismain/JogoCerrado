@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b8878ebc96ec1b488348b2939932018, type: 3}
+  m_Name: CoelhoTapeti
+  m_EditorClassIdentifier: Assembly-CSharp::Cerrado.Data.SpeciesData
+  id: coelho_tapeti
+  commonName: Tapeti (Coelho-do-mato)
+  scientificName: Sylvilagus brasiliensis
+  category: 0
+  rarity: 0
+  activityTime: 1
+  educationalDescription: "\xDAnico lagomorfo nativo do Brasil. De h\xE1bitos crepusculares e noturnos, camufla-se no capim seco e desempenha papel vital na dispers\xE3o de gram\xEDneas e na teia alimentar do Cerrado."
+  habitatDescription: Campos limpos, campos sujos e bordas de mata.
+  conservationStatus: Em Perigo (EN)
+  baseScore: 190
+  baseCoins: 20
+  minIdealDistance: 2.5
+  maxIdealDistance: 11
+  targetRadius: 0.8
+  icon: {fileID: 21300000, guid: a1ea1dcce3c46c548bd32e887fe9a41e, type: 3}

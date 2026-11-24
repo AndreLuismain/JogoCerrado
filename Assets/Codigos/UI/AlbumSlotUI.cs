@@ -12,6 +12,7 @@ namespace Cerrado.UI
         [Header("Elementos Visuais")]
         [SerializeField] private Button button;
         [SerializeField] private RawImage photoThumbnail;
+        [SerializeField] private Image speciesIconBadge;
         [SerializeField] private GameObject undiscoveredPlaceholder;
         [SerializeField] private TMP_Text nameText;
         [SerializeField] private TMP_Text starsText;
@@ -53,12 +54,24 @@ namespace Cerrado.UI
                     {
                         photoThumbnail.texture = photo;
                     }
+                    else if (entry.Species.Icon != null)
+                    {
+                        photoThumbnail.texture = entry.Species.Icon.texture;
+                    }
+                }
+
+                if (speciesIconBadge != null)
+                {
+                    speciesIconBadge.gameObject.SetActive(entry.Species.Icon != null);
+                    speciesIconBadge.sprite = entry.Species.Icon;
+                    speciesIconBadge.color = Color.white;
+                    speciesIconBadge.preserveAspect = true;
                 }
 
                 if (nameText != null) nameText.text = entry.Species.CommonName;
                 if (starsText != null)
                 {
-                    starsText.text = new string('★', entry.BestStars) + new string('☆', 5 - entry.BestStars);
+                    starsText.text = new string('*', entry.BestStars) + new string('.', 5 - entry.BestStars);
                     starsText.gameObject.SetActive(true);
                 }
 
@@ -78,6 +91,13 @@ namespace Cerrado.UI
                 // Espécie não descoberta ainda
                 if (undiscoveredPlaceholder != null) undiscoveredPlaceholder.SetActive(true);
                 if (photoThumbnail != null) photoThumbnail.gameObject.SetActive(false);
+                if (speciesIconBadge != null)
+                {
+                    speciesIconBadge.gameObject.SetActive(entry.Species.Icon != null);
+                    speciesIconBadge.sprite = entry.Species.Icon;
+                    speciesIconBadge.color = new Color(0.08f, 0.10f, 0.08f, 0.50f);
+                    speciesIconBadge.preserveAspect = true;
+                }
                 if (nameText != null) nameText.text = "??? (Não Descoberto)";
                 if (starsText != null) starsText.gameObject.SetActive(false);
                 if (rarityBadge != null)

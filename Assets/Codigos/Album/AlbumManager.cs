@@ -153,6 +153,8 @@ namespace Cerrado.Album
         // Estatísticas de Conclusão (GDD 5.7)
         public int GetTotalSpeciesCount() => albumEntries.Count;
         public int GetDiscoveredCount() => albumEntries.Values.Count(e => e.IsDiscovered);
+        public bool IsSpeciesDiscovered(string speciesId) =>
+            !string.IsNullOrEmpty(speciesId) && albumEntries.TryGetValue(speciesId, out var entry) && entry.IsDiscovered;
 
         public float GetOverallCompletionPercentage()
         {

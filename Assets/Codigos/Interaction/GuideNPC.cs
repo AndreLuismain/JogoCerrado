@@ -13,7 +13,14 @@ namespace Cerrado.Interaction
     {
         [Header("Configuração de Interação")]
         [SerializeField] private float interactionDistance = 3.5f;
+        [SerializeField] private float lookAtDistance = 8.0f;
+        [SerializeField] private float lookTurnSpeed = 4.5f;
         [SerializeField] private string npcName = "Prof. Silva (Biólogo do Cerrado)";
+
+        [Header("Animação do Biólogo")]
+        [SerializeField] private Animator npcAnimator;
+
+        private static readonly int IsTalkingHash = Animator.StringToHash("IsTalking");
 
         [Header("Diálogos Educativos do Tutorial")]
         [TextArea(2, 5)]
@@ -41,6 +48,16 @@ namespace Cerrado.Interaction
         private void Start()
         {
             LocatePlayer();
+
+            if (npcAnimator == null)
+            {
+                npcAnimator = GetComponentInChildren<Animator>();
+            }
+            if (npcAnimator != null)
+            {
+                npcAnimator.applyRootMotion = false;
+                npcAnimator.SetBool(IsTalkingHash, false);
+            }
 
             if (promptUI != null) promptUI.SetActive(false);
             if (dialoguePanel != null) dialoguePanel.SetActive(false);
@@ -70,6 +87,18 @@ namespace Cerrado.Interaction
 
             float dist = Vector3.Distance(transform.position, playerTransform.position);
             bool nearby = dist <= interactionDistance;
+
+            // Olha suavemente na direção do jogador quando estiver próximo ou conversando
+            if (dist <= lookAtDistance || isTalking)
+            {
+                Vector3 lookDir = playerTransform.position - transform.position;
+                lookDir.y = 0f;
+                if (lookDir.sqrMagnitude > 0.01f)
+                {
+                    Quaternion targetRot = Quaternion.LookRotation(lookDir.normalized);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * lookTurnSpeed);
+                }
+            }
 
             if (nearby != isPlayerNearby)
             {
@@ -116,6 +145,26 @@ namespace Cerrado.Interaction
             isTalking = true;
             currentLineIndex = 0;
 
+            if (npcAnimator != null)
+            {
+                npcAnimator.SetBool(IsTalkingHash, true);
+            }
+
+            var agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+            if (agent != null && agent.isOnNavMesh)
+            {
+                agent.isStopped = true;
+            }
+            if (playerTransform != null)
+            {
+                Vector3 lookDir = playerTransform.position - transform.position;
+                lookDir.y = 0f;
+                if (lookDir.sqrMagnitude > 0.01f)
+                {
+                    transform.rotation = Quaternion.LookRotation(lookDir);
+                }
+            }
+
             if (promptUI != null) promptUI.SetActive(false);
             if (dialoguePanel != null) dialoguePanel.SetActive(true);
 
@@ -161,6 +210,11 @@ namespace Cerrado.Interaction
         public void EndDialogue()
         {
             isTalking = false;
+
+            if (npcAnimator != null)
+            {
+                npcAnimator.SetBool(IsTalkingHash, false);
+            }
 
             if (dialoguePanel != null) dialoguePanel.SetActive(false);
             if (promptUI != null && isPlayerNearby) promptUI.SetActive(true);

@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Cerrado.Player;
+using Cerrado.Settings;
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
 #endif
@@ -41,6 +43,7 @@ namespace Cerrado.Photography
         private bool isAiming;
         private float currentTargetFOV;
         private PhotographableTarget currentFocusedTarget;
+        private PlayerController cachedPlayerController;
         private readonly List<PhotographableTarget> detectedTargetsCache = new List<PhotographableTarget>();
 
         public void UpgradeCamera(float minZoomDecrease, float focusToleranceIncrease)
@@ -68,6 +71,7 @@ namespace Cerrado.Photography
             {
                 audioSource = GetComponent<AudioSource>();
             }
+            cachedPlayerController = GetComponent<PlayerController>();
 
             if (playerCamera != null)
             {
@@ -78,6 +82,23 @@ namespace Cerrado.Photography
 
         private void Update()
         {
+            if (cachedPlayerController != null && !cachedPlayerController.CanControl)
+            {
+                if (isAiming)
+                {
+                    isAiming = false;
+                    currentTargetFOV = normalFOV;
+                    OnAimStateChanged?.Invoke(false);
+                }
+                if (currentFocusedTarget != null)
+                {
+                    currentFocusedTarget = null;
+                    OnTargetFocusChanged?.Invoke(null);
+                }
+                HandleZoomAndFOV();
+                return;
+            }
+
             HandleInput();
             HandleZoomAndFOV();
 
@@ -199,10 +220,11 @@ namespace Cerrado.Photography
         {
             if (playerCamera == null) return;
 
-            // Toca som de obturador
+            // Toca som de obturador respeitando o canal Ambiente/Efeitos
             if (audioSource != null && shutterSound != null)
             {
-                audioSource.PlayOneShot(shutterSound);
+                float sfxVol = Mathf.Clamp01(GameSettingsManager.SfxVolume);
+                if (sfxVol > 0.001f) audioSource.PlayOneShot(shutterSound, sfxVol);
             }
 
             // Captura o frame atual em Texture2D
